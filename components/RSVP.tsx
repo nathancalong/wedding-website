@@ -7,13 +7,42 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function RSVP() {
   const [attending, setAttending] = useState("yes");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    toast.success("Thank you! Your RSVP has been received.", {
-      description: "We can't wait to celebrate with you in Malaysia.",
-    });
-    (e.target as HTMLFormElement).reset();
+    setIsSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const payload = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      attending: formData.get("attending") === "yes",
+      guests: attending === "yes" ? parseInt(formData.get("guests") as string) || 1 : 0,
+      message: formData.get("message") as string,
+    };
+
+    try {
+      const res = await fetch("/api/rsvp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to submit");
+      }
+
+      toast.success("Thank you! Your RSVP has been received.", {
+        description: "We can't wait to celebrate with you in Malaysia.",
+      });
+      e.currentTarget.reset();
+      setAttending("yes");
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -46,6 +75,7 @@ export function RSVP() {
             <div className="grid gap-3">
               <Label>Will you be attending?</Label>
               <RadioGroup
+                name="attending"
                 value={attending}
                 onValueChange={setAttending}
                 className="grid grid-cols-2 gap-3"
@@ -70,7 +100,7 @@ export function RSVP() {
             {attending === "yes" && (
               <div className="grid gap-2">
                 <Label htmlFor="guests">Number of guests (including yourself)</Label>
-                <Input id="guests" type="number" min={1} max={4} defaultValue={1} />
+                <Input id="guests" name="guests" type="number" min={1} max={4} defaultValue={1} />
               </div>
             )}
 
@@ -81,9 +111,10 @@ export function RSVP() {
 
             <button
               type="submit"
-              className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-primary-foreground shadow-lg shadow-primary/30 transition hover:scale-[1.02] hover:shadow-xl"
+              disabled={isSubmitting}
+              className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-primary-foreground shadow-lg shadow-primary/30 transition hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Send RSVP
+              {isSubmitting ? "Sending..." : "Send RSVP"}
             </button>
           </div>
         </form>
