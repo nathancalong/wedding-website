@@ -31,13 +31,20 @@ export default async function handler(req: Request) {
 
     const sql = neon(databaseUrl);
 
-    const body: RSVPRequest = await req.json();
+    const text = await req.text();
+    if (!text) {
+      return new Response(
+        JSON.stringify({ error: "Empty request body" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
+    const body: RSVPRequest = JSON.parse(text);
     const { name, email, attending, guests, message } = body;
 
     if (!name || !email) {
       return new Response(
-        JSON.stringify({ error: "Name and email are required" }),
+        JSON.stringify({ error: "Name and email are required", received: { name, email } }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
