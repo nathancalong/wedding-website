@@ -64,12 +64,12 @@ export function RSVP() {
           <div className="grid gap-5">
             <div className="grid gap-2">
               <Label htmlFor="name">Full Name</Label>
-              <Input id="name" required placeholder="Your name" />
+              <Input id="name" name="name" required placeholder="Your name" />
             </div>
 
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" required placeholder="you@example.com" />
+              <Input id="email" name="email" type="email" required placeholder="you@example.com" />
             </div>
 
             <div className="grid gap-3">
@@ -106,7 +106,7 @@ export function RSVP() {
 
             <div className="grid gap-2">
               <Label htmlFor="message">Message for the couple (optional)</Label>
-              <Textarea id="message" placeholder="A note, a song request, dietary needs..." rows={4} />
+              <Textarea id="message" name="message" placeholder="A note, a song request, dietary needs..." rows={4} />
             </div>
 
             <button
