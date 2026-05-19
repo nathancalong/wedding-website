@@ -18,7 +18,10 @@ export function RSVP() {
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       attending: formData.get("attending") === "yes",
-      guests: attending === "yes" ? parseInt(formData.get("guests") as string) || 1 : 0,
+      guests:
+        attending === "yes"
+          ? parseInt(formData.get("guests") as string) || 1
+          : 0,
       message: formData.get("message") as string,
     };
 
@@ -29,8 +32,9 @@ export function RSVP() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to submit");
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Failed to submit");
       }
 
       toast.success("Thank you! Your RSVP has been received.", {
@@ -38,6 +42,7 @@ export function RSVP() {
       });
       e.currentTarget.reset();
       setAttending("yes");
+      return;
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -49,11 +54,14 @@ export function RSVP() {
     <section id="rsvp" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-2xl px-6">
         <div className="text-center">
-          <p className="font-script text-3xl text-hibiscus">Will you join us?</p>
+          <p className="font-script text-3xl text-hibiscus">
+            Will you join us?
+          </p>
           <h2 className="mt-2 text-4xl md:text-6xl text-foreground">RSVP</h2>
           <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
           <p className="mt-6 text-muted-foreground">
-            Kindly respond by your invitation date. We're so excited to celebrate with you.
+            Kindly respond by your invitation date. We're so excited to
+            celebrate with you.
           </p>
         </div>
 
@@ -69,7 +77,13 @@ export function RSVP() {
 
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" required placeholder="you@example.com" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                required
+                placeholder="you@example.com"
+              />
             </div>
 
             <div className="grid gap-3">
@@ -99,14 +113,28 @@ export function RSVP() {
 
             {attending === "yes" && (
               <div className="grid gap-2">
-                <Label htmlFor="guests">Number of guests (including yourself)</Label>
-                <Input id="guests" name="guests" type="number" min={1} max={4} defaultValue={1} />
+                <Label htmlFor="guests">
+                  Number of guests (including yourself)
+                </Label>
+                <Input
+                  id="guests"
+                  name="guests"
+                  type="number"
+                  min={1}
+                  max={4}
+                  defaultValue={1}
+                />
               </div>
             )}
 
             <div className="grid gap-2">
               <Label htmlFor="message">Message for the couple (optional)</Label>
-              <Textarea id="message" name="message" placeholder="A note, a song request, dietary needs..." rows={4} />
+              <Textarea
+                id="message"
+                name="message"
+                placeholder="A note, a song request, dietary needs..."
+                rows={4}
+              />
             </div>
 
             <button
