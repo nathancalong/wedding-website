@@ -13,7 +13,7 @@ const airlines = [
   },
 ];
 
-const visaInfo = [
+const visaInfo: { country: string; requirement: string }[] = [
   {
     country: "Most Countries",
     requirement: "90-day visa-free entry on arrival",
@@ -23,6 +23,7 @@ const visaInfo = [
     requirement: "No visa needed for stays under 90 days",
   },
   { country: "Australia", requirement: "eVisa required before travel" },
+  { country: "India", requirement: "eVisa available for tourism" },
 ];
 
 export function Travel() {
@@ -85,10 +86,7 @@ export function Travel() {
                   <span className="font-display text-foreground">
                     {item.country}
                   </span>
-                  <span className="text-foreground/80">
-                    {item.requirement ||
-                      (item as { description: string }).description}
-                  </span>
+                  <span className="text-foreground/80">{item.requirement}</span>
                 </div>
               ))}
             </div>
