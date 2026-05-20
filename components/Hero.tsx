@@ -1,63 +1,137 @@
+import { useState, useEffect } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import heroBg from "@/assets/hero-bg.jpg";
+import coupleImg from "@/assets/couple.png";
+
+const images = [heroBg, coupleImg, coupleImg];
 
 export function Hero() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 50 });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+    emblaApi.on("select", onSelect);
+    onSelect();
+  }, [emblaApi]);
+
+  const weddingDate = new Date("2027-03-26T16:00:00");
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date();
+      const diff = weddingDate.getTime() - now.getTime();
+      if (diff > 0) {
+        setTimeLeft({
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((diff / (1000 * 60)) % 60),
+          seconds: Math.floor((diff / 1000) % 60),
+        });
+      }
+    };
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <img
-          src={heroBg}
-          alt="Sasha and Nathan in a Malaysian jungle scene with the Petronas Twin Towers in the distance"
-          width={1920}
-          height={1280}
-          className="h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/10 to-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-hibiscus/10 via-transparent to-sunset/15" />
-      </div>
+    <section className="relative min-h-screen w-full bg-background">
+      <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
+        <div className="text-center">
+          <p className="font-display text-md tracking-[0.4em] uppercase text-muted-foreground">
+            We're Getting Married
+          </p>
+          <h1 className="mt-4 font-names text-7xl md:text-9xl text-foreground leading-none">
+            Sasha
+            <span className="mx-4 inline-block text-hibiscus/60">&</span>
+            Nathan
+          </h1>
+        </div>
 
-      {/* Content — text anchored at top, couple sits in the image below */}
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col items-center px-6 pt-14 md:pt-16 text-center">
-        <p
-          className="font-script text-3xl md:text-4xl text-hibiscus animate-hero-fade-up"
-          style={{ animationDelay: "0.1s" }}
-        >
-          Together with our families
-        </p>
-
-        <h1
-          className="mt-2 font-names text-6xl md:text-8xl lg:text-9xl text-foreground leading-[1] animate-hero-fade-up"
-          style={{ animationDelay: "0.4s" }}
-        >
-          Nathan
-          <span className="mx-2 inline-block text-hibiscus align-middle">
-            &
+        <div className="mt-10 flex items-center justify-center gap-3 text-lg tracking-[0.15em]">
+          <span className="font-display uppercase text-foreground">
+            March 26, 2027
           </span>
-          Sasha
-        </h1>
+          <span className="text-muted-foreground">·</span>
+          <span className="font-body text-sm uppercase text-muted-foreground">
+            Kuala Lumpur, Malaysia
+          </span>
+        </div>
 
-        <div className="mt-4 h-px w-40 bg-gradient-to-r from-transparent via-hibiscus to-transparent animate-shimmer-line" />
+        <div className="mt-4 flex justify-center gap-8 md:gap-16">
+          {[
+            { value: timeLeft.days, label: "Days" },
+            { value: timeLeft.hours, label: "Hours" },
+            { value: timeLeft.minutes, label: "Minutes" },
+            { value: timeLeft.seconds, label: "Seconds" },
+          ].map(({ value, label }) => (
+            <div key={label} className="flex flex-col items-center">
+              <span className="font-display text-4xl md:text-5xl text-foreground">
+                {String(value).padStart(2, "0")}
+              </span>
+              <span className="mt-2 font-body text-xs tracking-[0.2em] uppercase text-muted-foreground">
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
 
-        <p
-          className="mt-4 font-display text-lg md:text-xl tracking-[0.25em] uppercase text-foreground/90 animate-hero-fade-up"
-          style={{ animationDelay: "1.0s" }}
-        >
-          Kuala Lumpur · 2027
-        </p>
+        <div className="relative mx-auto mt-20 max-w-4xl">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex">
+              {images.map((src, idx) => (
+                <div
+                  className="relative min-w-0 flex-[0_0_100%] px-2"
+                  key={idx}
+                >
+                  <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+                    <img
+                      src={src}
+                      alt={`Sasha and Nathan ${idx + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-        <a
-          href="#rsvp"
-          onClick={(e) => {
-            e.preventDefault();
-            document
-              .getElementById("rsvp")
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
-          }}
-          className="mt-auto mb-10 inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-primary-foreground shadow-lg shadow-primary/30 transition hover:scale-[1.03] hover:shadow-xl animate-hero-fade-up"
-          style={{ animationDelay: "1.5s" }}
-        >
-          RSVP
-        </a>
+        <div className="mt-4 flex justify-center gap-2">
+          {images.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => emblaApi?.scrollTo(idx)}
+              className={`h-1 rounded-full transition-all duration-300 ${
+                idx === selectedIndex ? "w-8 bg-foreground" : "w-2 bg-border"
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        <div className="mt-16 pb-16 text-center">
+          <a
+            href="#rsvp"
+            onClick={(e) => {
+              e.preventDefault();
+              document
+                .getElementById("rsvp")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className="inline-block rounded-full bg-hibiscus px-10 py-3 font-body text-sm tracking-[0.25em] uppercase text-white transition hover:bg-hibiscus/80"
+          >
+            RSVP
+          </a>
+        </div>
       </div>
     </section>
   );

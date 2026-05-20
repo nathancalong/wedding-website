@@ -4,10 +4,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import hibiscus from "@/assets/flower-hibiscus-red.png";
-import orchid from "@/assets/flower-orchid.png";
-import fern from "@/assets/leaf-fern.png";
-import banana from "@/assets/leaf-banana.png";
 
 const faqs = [
   {
@@ -38,20 +34,15 @@ const faqs = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="relative overflow-hidden bg-secondary/40 py-24 md:py-32">
-      <img src={banana} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -left-20 -top-10 w-72 opacity-50 -rotate-12" />
-      <img src={fern} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -right-10 top-20 w-56 opacity-60 rotate-12" />
-      <img src={hibiscus} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute -left-10 bottom-20 w-40 opacity-70 -rotate-6" />
-      <img src={orchid} alt="" aria-hidden loading="lazy" className="pointer-events-none absolute right-6 bottom-10 w-36 opacity-80 rotate-6" />
-
-      <div className="relative mx-auto max-w-3xl px-6">
+    <section id="faq" className="py-12 md:py-16">
+      <div className="mx-auto max-w-3xl px-6">
         <div className="text-center">
           <p className="font-script text-3xl text-hibiscus">Good to know</p>
           <h2 className="mt-2 text-4xl md:text-6xl text-foreground">Frequently Asked</h2>
-          <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
+          <div className="mx-auto mt-4 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
         </div>
 
-        <Accordion type="single" collapsible className="mt-12 space-y-3">
+        <Accordion type="single" collapsible className="mt-8 space-y-3">
           {faqs.map((f, i) => (
             <AccordionItem
               key={i}

@@ -60,8 +60,10 @@ export function RSVP() {
           <h2 className="mt-2 text-4xl md:text-6xl text-foreground">RSVP</h2>
           <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
           <p className="mt-6 text-muted-foreground">
-            Kindly respond by your invitation date. We're so excited to
-            celebrate with you.
+            Kindly respond by January, 2027.
+          </p>
+          <p className="mt-2 text-muted-foreground">
+            We're so excited to celebrate with you.
           </p>
         </div>
 
@@ -140,7 +142,7 @@ export function RSVP() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-primary-foreground shadow-lg shadow-primary/30 transition hover:scale-[1.02] hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-hibiscus px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Sending..." : "Send RSVP"}
             </button>
