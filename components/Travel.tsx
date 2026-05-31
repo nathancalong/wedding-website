@@ -5,25 +5,17 @@ const airlines = [
   },
   {
     name: "Air Asia",
-    description: "Budget-friendly option with frequent flights",
+    description: "Budget-friendly option with frequent direct flights",
   },
   {
     name: "Singapore Airlines",
     description: "Via Singapore, frequent daily flights",
   },
-];
-
-const visaInfo: { country: string; requirement: string }[] = [
   {
-    country: "Most Countries",
-    requirement: "90-day visa-free entry on arrival",
+    name: "Scoot Airlines",
+    description:
+      "Lowest cost option, typically with long layovers in Singapore",
   },
-  {
-    country: "USA, UK, EU",
-    requirement: "No visa needed for stays under 90 days",
-  },
-  { country: "Australia", requirement: "eVisa required before travel" },
-  { country: "India", requirement: "eVisa available for tourism" },
 ];
 
 export function Travel() {
@@ -41,13 +33,96 @@ export function Travel() {
         <div className="mt-10 space-y-10">
           <div>
             <p className="text-foreground/80 leading-relaxed">
-              Fly into <strong>Kuala Lumpur International Airport (KUL)</strong>
-              , located in Sepang about 45 minutes from the city center.
+              Fly into{" "}
+              <strong>
+                <a
+                  href="https://airports.malaysiaairports.com.my/en/klia1"
+                  target="blank"
+                  className="underline"
+                >
+                  Kuala Lumpur International Airport
+                </a>
+              </strong>{" "}
+              (KUL), located in Sepang about 45 minutes from the city center.
             </p>
             <p className="mt-4 text-foreground/80 leading-relaxed">
-              From the airport, you can take a taxi, grab a ride, or arrange a
-              transfer to your hotel. We recommend downloading the{" "}
-              <strong>Grab</strong> app for convenient transportation.
+              From the airport, you can take a taxi, public transport, or
+              private transfer to your hotel. We strongly recommend downloading
+              the{" "}
+              <strong>
+                <a
+                  href="https://www.grab.com/my/download/"
+                  target="blank"
+                  className="underline"
+                >
+                  Grab
+                </a>
+              </strong>{" "}
+              app for convenient transportation, it's the Uber of South-east
+              Asia, is affordable, easy to use and convenient. You can download
+              the app and set up an account ahead of time - no need to stress at
+              the airport.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-display text-2xl text-hibiscus">
+              Visa Information
+            </h3>
+            <p className="mt-4 text-foreground/80 leading-relaxed">
+              You must complete a{" "}
+              <strong>
+                <a
+                  href="https://imigresen-online.imi.gov.my/mdac/main"
+                  className="underline"
+                  target="blank"
+                >
+                  Malaysia Digital Arrival Card (MDAC)
+                </a>
+              </strong>{" "}
+              before you arrive. The MDAC must be submitted through the{" "}
+              <a
+                href="https://imigresen-online.imi.gov.my/mdac/main"
+                target="blank"
+                className="underline"
+              >
+                Malaysian Immigration website
+              </a>
+              .
+            </p>
+            <p className="mt-4 text-foreground/80 leading-relaxed">
+              You can read more on the{" "}
+              <a
+                href="https://www.smartraveller.gov.au/destinations/asia/malaysia"
+                target="blank"
+                className="underline"
+              >
+                Australian Government SmartTraveller
+              </a>{" "}
+              website for the latest recommendations and travel requirements
+              around travel to Malaysia.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-display text-2xl text-hibiscus">
+              Travel Cards
+            </h3>
+            <p className="mt-4 text-foreground/80 leading-relaxed">
+              As with most international travel it's advisable to set up a
+              travel card for ease of use while overseas. We personally
+              recommend{" "}
+              <strong>
+                <a
+                  href="https://wise.com/"
+                  className="underline"
+                  target="blank"
+                >
+                  Wise
+                </a>
+              </strong>{" "}
+              as it is low fees, works for ATM withdrawals, plus Grab and other
+              international apps.
             </p>
           </div>
 
@@ -67,26 +142,6 @@ export function Travel() {
                   <p className="mt-1 text-sm text-muted-foreground">
                     {airline.description}
                   </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="font-display text-2xl text-hibiscus">
-              Visa Information
-            </h3>
-            <p className="mt-4 text-foreground/80 leading-relaxed">
-              Malaysia offers visa-free entry for citizens of many countries.
-              Please check your specific requirements before traveling.
-            </p>
-            <div className="mt-4 space-y-3">
-              {visaInfo.map((item) => (
-                <div key={item.country} className="flex gap-4">
-                  <span className="font-display text-foreground">
-                    {item.country}
-                  </span>
-                  <span className="text-foreground/80">{item.requirement}</span>
                 </div>
               ))}
             </div>

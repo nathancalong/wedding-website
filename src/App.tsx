@@ -10,7 +10,13 @@ import { FAQ } from "@/components/FAQ";
 import { RSVP } from "@/components/RSVP";
 import { Toaster } from "@/components/ui/sonner";
 
-type Tab = "schedule" | "venue" | "travel" | "accommodation" | "explore" | "faq";
+type Tab =
+  | "schedule"
+  | "venue"
+  | "travel"
+  | "accommodation"
+  | "explore"
+  | "faq";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "schedule", label: "Schedule" },
@@ -78,10 +84,10 @@ function App() {
 
       <RSVP />
 
-      <footer className="border-t border-border py-10 text-center">
+      <footer className="border-t border-border py-6 text-center">
         <p className="font-script text-3xl text-hibiscus">Sasha & Nathan</p>
         <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          Kuala Lumpur · 2027
+          26 March 2027 · Botanica & Co · Kuala Lumpur, Malaysia
         </p>
       </footer>
       <Toaster richColors position="top-center" />

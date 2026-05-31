@@ -57,12 +57,8 @@ export function Hero() {
         </div>
 
         <div className="mt-10 flex items-center justify-center gap-3 text-lg tracking-[0.15em]">
-          <span className="font-display uppercase text-foreground">
-            March 26, 2027
-          </span>
-          <span className="text-muted-foreground">·</span>
-          <span className="font-body text-sm uppercase text-muted-foreground">
-            Kuala Lumpur, Malaysia
+          <span className="font-display uppercase text-foreground text-md">
+            March 26, 2027 · Kuala Lumpur, Malaysia
           </span>
         </div>
 
