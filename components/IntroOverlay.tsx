@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import waxSeal from "@/assets/wax-seal.png";
 import { HeroHeader } from "@/components/HeroHeader";
@@ -11,6 +11,39 @@ type Phase = "idle" | "opening" | "done";
 
 export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
   const [phase, setPhase] = useState<Phase>("idle");
+  const [showHint, setShowHint] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    if (phase !== "idle") return;
+    const timer = setTimeout(() => setShowHint(true), 10000);
+    return () => clearTimeout(timer);
+  }, [phase]);
+
+  useLayoutEffect(() => {
+    const prev = history.scrollRestoration;
+    history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+    return () => {
+      history.scrollRestoration = prev;
+    };
+  }, []);
+
+  useEffect(() => {
+    const timers = [
+      requestAnimationFrame(() => window.scrollTo(0, 0)),
+      setTimeout(() => window.scrollTo(0, 0), 0),
+      setTimeout(() => window.scrollTo(0, 0), 100),
+    ];
+    return () => timers.forEach((id) => clearTimeout(id as number));
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   const handleOpen = () => {
     if (phase !== "idle") return;
@@ -26,17 +59,12 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
       {phase !== "done" && (
         <motion.div
           className="fixed inset-0 z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6 }}
         >
           {/* Envelope body — fills the entire viewport */}
-          <motion.div
+          <div
             className="absolute inset-0 overflow-hidden"
-            initial={{ scale: 1.05, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
             style={{
               background:
                 "linear-gradient(175deg, #f2ebe0 0%, #ece3d4 30%, #e6dbca 60%, #e0d4c2 100%)",
@@ -103,7 +131,20 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
                 fill="rgba(255,255,255,0.05)"
               />
             </svg>
-          </motion.div>
+          </div>
+
+          {/* Page — the letter inside the envelope, matches hero bg */}
+          <motion.div
+            className="absolute inset-0"
+            style={{ zIndex: 6, backgroundColor: "var(--color-background)" }}
+            initial={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}
+            animate={
+              phase === "opening"
+                ? { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }
+                : { clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }
+            }
+            transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          />
 
           {/* Envelope flap — trapezoid top, tapering to point at 60% */}
           <motion.div
@@ -142,21 +183,51 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
           {/* Hero header — hidden behind the flap, revealed on open */}
           <div
             className="absolute inset-0 flex items-start justify-center"
-            style={{ zIndex: 5 }}
+            style={{ zIndex: 7 }}
           >
             <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 w-full">
               <HeroHeader
                 animate
                 animationState={phase === "opening" ? "visible" : "hidden"}
-                textColor="#3d3024"
-                accentColor="rgba(180,80,60,0.5)"
               />
             </div>
           </div>
 
           {/* Wax seal — at flap apex */}
+          {/* Pulse highlight ring — sits behind the seal */}
+          <AnimatePresence>
+            {showHint && phase === "idle" && !isHovering && (
+              <motion.div
+                className="absolute rounded-full pointer-events-none"
+                style={{
+                  top: "calc(60% - 30px)",
+                  left: "50%",
+                  marginTop: -148,
+                  marginLeft: -148,
+                  width: 296,
+                  height: 296,
+                  zIndex: 19,
+                  background: "radial-gradient(circle, rgba(190,50,40,0.5) 0%, rgba(190,50,40,0.15) 40%, transparent 70%)",
+                }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0.92, 1.18, 0.92],
+                  transition: {
+                    duration: 2.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
+                }}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+              />
+            )}
+          </AnimatePresence>
+
           <motion.button
             onClick={handleOpen}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
             className="absolute cursor-pointer"
             style={{
               top: "calc(60% - 30px)",
@@ -167,7 +238,7 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
               width: 280,
               height: 280,
             }}
-            initial={{ scale: 0, opacity: 0, rotate: -30 }}
+            initial={false}
             animate={
               phase === "opening"
                 ? { scale: 1.4, opacity: 0, rotate: 15 }
@@ -183,31 +254,9 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
             <img
               src={waxSeal}
               alt="Wax seal"
-              className="h-full w-full object-contain"
+              className="relative h-full w-full object-contain"
             />
           </motion.button>
-
-          {/* Hint text below the seal */}
-          <AnimatePresence>
-            {phase === "idle" && (
-              <motion.p
-                className="absolute font-display text-xs tracking-[0.3em] uppercase text-black/15"
-                style={{
-                  top: "calc(60% + 130px)",
-                  left: 0,
-                  right: 0,
-                  textAlign: "center",
-                  zIndex: 20,
-                }}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 1, duration: 0.5 }}
-              >
-                Click the seal to open
-              </motion.p>
-            )}
-          </AnimatePresence>
         </motion.div>
       )}
     </AnimatePresence>

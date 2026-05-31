@@ -1,47 +1,42 @@
 import { useState, useEffect } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import heroBg from "@/assets/hero-bg.jpg";
-import coupleImg from "@/assets/couple.png";
+import img1 from "@/assets/image1.jpg";
+import img2 from "@/assets/image2.jpg";
+import img3 from "@/assets/image3.jpg";
+import img4 from "@/assets/image4.jpg";
+import img5 from "@/assets/image5.jpg";
 import { HeroHeader } from "@/components/HeroHeader";
+import { ImageCarousel } from "@/components/ImageCarousel";
 
-const images = [heroBg, coupleImg, coupleImg];
+const images = [
+  { src: img1, alt: "Sasha and Nathan 1" },
+  { src: img2, alt: "Sasha and Nathan 2" },
+  { src: img3, alt: "Sasha and Nathan 3" },
+  { src: img4, alt: "Sasha and Nathan 4" },
+  { src: img5, alt: "Sasha and Nathan 5" },
+];
 
-export function Hero() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 50 });
-  const [selectedIndex, setSelectedIndex] = useState(0);
+const weddingDate = new Date("2027-03-26T16:00:00");
+
+function computeTimeLeft() {
+  const diff = weddingDate.getTime() - Date.now();
+  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+  return {
+    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((diff / (1000 * 60)) % 60),
+    seconds: Math.floor((diff / 1000) % 60),
+  };
+}
+
+export function Hero({ startCountdown }: { startCountdown: boolean }) {
+  const [timeLeft, setTimeLeft] = useState(computeTimeLeft);
 
   useEffect(() => {
-    if (!emblaApi) return;
-    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
-    emblaApi.on("select", onSelect);
-    onSelect();
-  }, [emblaApi]);
-
-  const weddingDate = new Date("2027-03-26T16:00:00");
-  const [timeLeft, setTimeLeft] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
-  useEffect(() => {
-    const updateCountdown = () => {
-      const now = new Date();
-      const diff = weddingDate.getTime() - now.getTime();
-      if (diff > 0) {
-        setTimeLeft({
-          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-          hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-          minutes: Math.floor((diff / (1000 * 60)) % 60),
-          seconds: Math.floor((diff / 1000) % 60),
-        });
-      }
-    };
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
+    if (!startCountdown) return;
+    setTimeLeft(computeTimeLeft());
+    const interval = setInterval(() => setTimeLeft(computeTimeLeft()), 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [startCountdown]);
 
   return (
     <section className="relative min-h-screen w-full bg-background">
@@ -66,41 +61,7 @@ export function Hero() {
           ))}
         </div>
 
-        <div className="relative mx-auto mt-20 max-w-4xl">
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex">
-              {images.map((src, idx) => (
-                <div
-                  className="relative min-w-0 flex-[0_0_100%] px-2"
-                  key={idx}
-                >
-                  <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
-                    <img
-                      src={src}
-                      alt={`Sasha and Nathan ${idx + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 flex justify-center gap-2">
-          {images.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => emblaApi?.scrollTo(idx)}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                idx === selectedIndex ? "w-8 bg-foreground" : "w-2 bg-border"
-              }`}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
-        </div>
-
-        <div className="mt-16 pb-16 text-center">
+        <div className="mt-8 text-center">
           <a
             href="#rsvp"
             onClick={(e) => {
@@ -115,6 +76,12 @@ export function Hero() {
           </a>
         </div>
       </div>
+
+      <ImageCarousel
+        images={images}
+        className="mx-auto mt-8 max-w-xl px-4 sm:max-w-xl sm:px-6 md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-8xl"
+        disabled={!startCountdown}
+      />
     </section>
   );
 }

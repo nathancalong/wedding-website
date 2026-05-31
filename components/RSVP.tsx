@@ -52,7 +52,7 @@ export function RSVP() {
 
   return (
     <section id="rsvp" className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-2xl px-6">
+      <div className="mx-auto max-w-2xl px-4">
         <div className="text-center">
           <p className="font-script text-3xl text-hibiscus">
             Will you join us?

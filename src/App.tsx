@@ -31,15 +31,16 @@ const tabs: { id: Tab; label: string }[] = [
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>("schedule");
   const [showOverlay, setShowOverlay] = useState(true);
+  const [introDismissed, setIntroDismissed] = useState(false);
 
   return (
     <main className="min-h-screen bg-background">
       <AnimatePresence>
         {showOverlay && (
-          <IntroOverlay onDismiss={() => setShowOverlay(false)} />
+          <IntroOverlay onDismiss={() => { setShowOverlay(false); setIntroDismissed(true); }} />
         )}
       </AnimatePresence>
-      <Hero />
+      <Hero startCountdown={introDismissed} />
 
       <div className="bg-secondary/40">
         <div className="mx-auto flex max-w-3xl justify-center gap-8 px-6 py-6">
@@ -91,11 +92,13 @@ function App() {
 
       <RSVP />
 
-      <footer className="border-t border-border py-6 text-center">
-        <p className="font-script text-3xl text-hibiscus">Sasha & Nathan</p>
-        <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          26 March 2027 · Botanica & Co · Kuala Lumpur, Malaysia
-        </p>
+      <footer className="">
+        <div className="py-6 text-center bg-secondary/40">
+          <p className="font-script text-3xl text-hibiscus">Sasha & Nathan</p>
+          <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
+            26 March 2027 · Botanica & Co · Kuala Lumpur, Malaysia
+          </p>
+        </div>
       </footer>
       <Toaster richColors position="top-center" />
     </main>
