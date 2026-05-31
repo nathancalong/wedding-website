@@ -1,43 +1,61 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntroOverlay } from "@/components/IntroOverlay";
 import { Hero } from "@/components/Hero";
-import { Schedule } from "@/components/Schedule";
-import { Venue } from "@/components/Venue";
+import { WeddingInfo } from "@/components/WeddingInfo";
 import { Travel } from "@/components/Travel";
-import { Accommodation } from "@/components/Accommodation";
 import { Explore } from "@/components/Explore";
 import { FAQ } from "@/components/FAQ";
 import { RSVP } from "@/components/RSVP";
 import { Toaster } from "@/components/ui/sonner";
 
-type Tab =
-  | "schedule"
-  | "venue"
-  | "travel"
-  | "accommodation"
-  | "explore"
-  | "faq";
+type Tab = "info" | "travel" | "explore" | "faq";
 
 const tabs: { id: Tab; label: string }[] = [
-  { id: "schedule", label: "Schedule" },
-  { id: "venue", label: "Venue" },
+  { id: "info", label: "Info" },
   { id: "travel", label: "Travel" },
-  { id: "accommodation", label: "Accommodation" },
   { id: "explore", label: "Explore" },
   { id: "faq", label: "FAQ" },
 ];
 
 function App() {
-  const [activeTab, setActiveTab] = useState<Tab>("schedule");
+  const [activeTab, setActiveTab] = useState<Tab>("info");
   const [showOverlay, setShowOverlay] = useState(true);
   const [introDismissed, setIntroDismissed] = useState(false);
+  const touchStartX = useRef(0);
+
+  const currentIndex = tabs.findIndex((t) => t.id === activeTab);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if ((e.target as HTMLElement).closest(".leaflet-container")) return;
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if ((e.target as HTMLElement).closest(".leaflet-container")) return;
+      const diff = touchStartX.current - e.changedTouches[0].clientX;
+      const minSwipe = 50;
+      if (Math.abs(diff) < minSwipe) return;
+      if (diff > 0 && currentIndex < tabs.length - 1) {
+        setActiveTab(tabs[currentIndex + 1].id);
+      } else if (diff < 0 && currentIndex > 0) {
+        setActiveTab(tabs[currentIndex - 1].id);
+      }
+    },
+    [currentIndex],
+  );
 
   return (
     <main className="min-h-screen bg-background">
       <AnimatePresence>
         {showOverlay && (
-          <IntroOverlay onDismiss={() => { setShowOverlay(false); setIntroDismissed(true); }} />
+          <IntroOverlay
+            onDismiss={() => {
+              setShowOverlay(false);
+              setIntroDismissed(true);
+            }}
+          />
         )}
       </AnimatePresence>
       <Hero startCountdown={introDismissed} />
@@ -70,7 +88,11 @@ function App() {
         </div>
       </div>
 
-      <div className="bg-secondary/40 relative overflow-hidden">
+      <div
+        className="bg-secondary/40 relative overflow-hidden touch-pan-y"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -80,10 +102,8 @@ function App() {
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="w-full"
           >
-            {activeTab === "schedule" && <Schedule />}
-            {activeTab === "venue" && <Venue />}
+            {activeTab === "info" && <WeddingInfo />}
             {activeTab === "travel" && <Travel />}
-            {activeTab === "accommodation" && <Accommodation />}
             {activeTab === "explore" && <Explore />}
             {activeTab === "faq" && <FAQ />}
           </motion.div>
@@ -94,7 +114,9 @@ function App() {
 
       <footer className="">
         <div className="py-6 text-center bg-secondary/40">
-          <p className="font-script text-3xl text-hibiscus">Sasha & Nathan</p>
+          <p className="font-names text-3xl text-foreground">
+            Sasha <span className="text-hibiscus">&</span> Nathan
+          </p>
           <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
             26 March 2027 · Botanica & Co · Kuala Lumpur, Malaysia
           </p>

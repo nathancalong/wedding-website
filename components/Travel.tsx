@@ -30,7 +30,7 @@ export function Travel() {
           <div className="mx-auto mt-4 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
         </div>
 
-        <div className="mt-10 space-y-10">
+        <div className="mt-10 space-y-6">
           <div>
             <p className="text-foreground/80 leading-relaxed">
               Fly into{" "}
@@ -46,22 +46,20 @@ export function Travel() {
               (KUL), located in Sepang about 45 minutes from the city center.
             </p>
             <p className="mt-4 text-foreground/80 leading-relaxed">
-              From the airport, you can take a taxi, public transport, or
-              private transfer to your hotel. We strongly recommend downloading
-              the{" "}
+              From the airport, we strongly recommend using the{" "}
               <strong>
                 <a
                   href="https://www.grab.com/my/download/"
                   target="blank"
                   className="underline"
                 >
-                  Grab
+                  Grab app
                 </a>
               </strong>{" "}
-              app for convenient transportation, it's the Uber of South-east
-              Asia, is affordable, easy to use and convenient. You can download
-              the app and set up an account ahead of time - no need to stress at
-              the airport.
+              for convenient transportation, it's the Uber of South-east Asia,
+              is affordable, easy to use and convenient. You can download the
+              app and set up an account ahead of time - no need to stress when
+              you arrive.
             </p>
           </div>
 

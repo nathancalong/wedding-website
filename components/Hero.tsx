@@ -4,6 +4,7 @@ import img2 from "@/assets/image2.jpg";
 import img3 from "@/assets/image3.jpg";
 import img4 from "@/assets/image4.jpg";
 import img5 from "@/assets/image5.jpg";
+import img6 from "@/assets/image6.jpg";
 import { HeroHeader } from "@/components/HeroHeader";
 import { ImageCarousel } from "@/components/ImageCarousel";
 
@@ -13,6 +14,7 @@ const images = [
   { src: img3, alt: "Sasha and Nathan 3" },
   { src: img4, alt: "Sasha and Nathan 4" },
   { src: img5, alt: "Sasha and Nathan 5" },
+  { src: img6, alt: "Sasha and Nathan 6" },
 ];
 
 const weddingDate = new Date("2027-03-26T16:00:00");
@@ -39,7 +41,7 @@ export function Hero({ startCountdown }: { startCountdown: boolean }) {
   }, [startCountdown]);
 
   return (
-    <section className="relative min-h-screen w-full bg-background">
+    <section className="relative flex min-h-screen flex-col w-full bg-background">
       <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
         <HeroHeader />
 
@@ -77,11 +79,13 @@ export function Hero({ startCountdown }: { startCountdown: boolean }) {
         </div>
       </div>
 
-      <ImageCarousel
-        images={images}
-        className="mx-auto mt-8 max-w-xl px-4 sm:max-w-xl sm:px-6 md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-8xl"
-        disabled={!startCountdown}
-      />
+      <div className="flex flex-1 items-center justify-center">
+        <ImageCarousel
+          images={images}
+          className="mx-auto max-w-xl px-4 sm:max-w-xl sm:px-6 md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-8xl"
+          disabled={!startCountdown}
+        />
+      </div>
     </section>
   );
 }

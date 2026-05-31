@@ -49,8 +49,8 @@ export function FAQ() {
               value={`item-${i}`}
               className="rounded-xl border border-border bg-card px-5 shadow-sm"
             >
-              <AccordionTrigger className="text-left font-display text-xl text-foreground hover:no-underline">
-                {f.q}
+              <AccordionTrigger className="text-left font-display text-xl text-foreground hover:no-underline [&[data-state=open]>span]:border-b-2 [&[data-state=open]>span]:border-hibiscus [&[data-state=open]>span]:pb-0.5">
+                <span>{f.q}</span>
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed">
                 {f.a}

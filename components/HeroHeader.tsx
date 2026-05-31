@@ -15,7 +15,8 @@ export function HeroHeader({
   accentColor = "var(--color-hibiscus)",
   animationState = "visible",
 }: HeroHeaderProps) {
-  const target = animationState === "visible" ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 };
+  const target =
+    animationState === "visible" ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 };
 
   const pProps = animate
     ? {
@@ -49,14 +50,14 @@ export function HeroHeader({
     <div className={className}>
       <div className="text-center">
         <P
-          className="font-display text-md tracking-[0.4em] uppercase"
+          className="font-display text-xs sm:test-md md:text-lg tracking-[0.4em] uppercase"
           style={{ color: "var(--color-muted-foreground)" }}
           {...pProps}
         >
           We're Getting Married
         </P>
         <H1
-          className="mt-4 font-names text-7xl md:text-9xl leading-none"
+          className="mt-4 font-names text-6xl sm:text-6xl md:text-9xl leading-none"
           style={{ color: textColor }}
           {...h1Props}
         >
@@ -71,7 +72,10 @@ export function HeroHeader({
         className="mt-10 flex items-center justify-center gap-3 text-lg tracking-[0.15em]"
         {...dateProps}
       >
-        <span className="font-display uppercase text-md" style={{ color: textColor }}>
+        <span
+          className="font-display uppercase text-md"
+          style={{ color: textColor }}
+        >
           March 26, 2027 · Kuala Lumpur, Malaysia
         </span>
       </DateWrapper>
