@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { IntroOverlay } from "@/components/IntroOverlay";
 import { Hero } from "@/components/Hero";
 import { Schedule } from "@/components/Schedule";
 import { Venue } from "@/components/Venue";
@@ -29,9 +30,15 @@ const tabs: { id: Tab; label: string }[] = [
 
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>("schedule");
+  const [showOverlay, setShowOverlay] = useState(true);
 
   return (
     <main className="min-h-screen bg-background">
+      <AnimatePresence>
+        {showOverlay && (
+          <IntroOverlay onDismiss={() => setShowOverlay(false)} />
+        )}
+      </AnimatePresence>
       <Hero />
 
       <div className="bg-secondary/40">

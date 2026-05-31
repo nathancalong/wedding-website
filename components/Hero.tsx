@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import heroBg from "@/assets/hero-bg.jpg";
 import coupleImg from "@/assets/couple.png";
+import { HeroHeader } from "@/components/HeroHeader";
 
 const images = [heroBg, coupleImg, coupleImg];
 
@@ -45,22 +46,7 @@ export function Hero() {
   return (
     <section className="relative min-h-screen w-full bg-background">
       <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
-        <div className="text-center">
-          <p className="font-display text-md tracking-[0.4em] uppercase text-muted-foreground">
-            We're Getting Married
-          </p>
-          <h1 className="mt-4 font-names text-7xl md:text-9xl text-foreground leading-none">
-            Sasha
-            <span className="mx-4 inline-block text-hibiscus/60">&</span>
-            Nathan
-          </h1>
-        </div>
-
-        <div className="mt-10 flex items-center justify-center gap-3 text-lg tracking-[0.15em]">
-          <span className="font-display uppercase text-foreground text-md">
-            March 26, 2027 · Kuala Lumpur, Malaysia
-          </span>
-        </div>
+        <HeroHeader />
 
         <div className="mt-4 flex justify-center gap-8 md:gap-16">
           {[
