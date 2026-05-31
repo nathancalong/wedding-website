@@ -23,23 +23,28 @@ function App() {
   const [showOverlay, setShowOverlay] = useState(true);
   const [introDismissed, setIntroDismissed] = useState(false);
   const touchStartX = useRef(0);
+  const touchStartY = useRef(0);
 
   const currentIndex = tabs.findIndex((t) => t.id === activeTab);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if ((e.target as HTMLElement).closest(".leaflet-container")) return;
     touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
   }, []);
 
   const handleTouchEnd = useCallback(
     (e: React.TouchEvent) => {
       if ((e.target as HTMLElement).closest(".leaflet-container")) return;
-      const diff = touchStartX.current - e.changedTouches[0].clientX;
+      const dx = touchStartX.current - e.changedTouches[0].clientX;
+      const dy = touchStartY.current - e.changedTouches[0].clientY;
       const minSwipe = 50;
-      if (Math.abs(diff) < minSwipe) return;
-      if (diff > 0 && currentIndex < tabs.length - 1) {
+      const maxVerticalForSwipe = 75;
+      if (Math.abs(dy) > maxVerticalForSwipe) return;
+      if (Math.abs(dx) < minSwipe) return;
+      if (dx > 0 && currentIndex < tabs.length - 1) {
         setActiveTab(tabs[currentIndex + 1].id);
-      } else if (diff < 0 && currentIndex > 0) {
+      } else if (dx < 0 && currentIndex > 0) {
         setActiveTab(tabs[currentIndex - 1].id);
       }
     },
