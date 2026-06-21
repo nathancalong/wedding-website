@@ -25,33 +25,23 @@ function App() {
   const [showOverlay, setShowOverlay] = useState(true);
   const [introDismissed, setIntroDismissed] = useState(false);
   const [direction, setDirection] = useState(1);
-  const [isStuck, setIsStuck] = useState(false);
   const [tabsVisible, setTabsVisible] = useState(true);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
-  const heroRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const heroEl = heroRef.current;
     const tabsEl = tabsRef.current;
-    if (!heroEl || !tabsEl) return;
-
-    const heroObserver = new IntersectionObserver(
-      ([entry]) => setIsStuck(!entry.isIntersecting),
-      { threshold: 0 }
-    );
+    if (!tabsEl) return;
 
     const tabsObserver = new IntersectionObserver(
       ([entry]) => setTabsVisible(entry.isIntersecting),
-      { threshold: 0 }
+      { threshold: 0, rootMargin: "-80px 0px 80px 0px" }
     );
 
-    heroObserver.observe(heroEl);
     tabsObserver.observe(tabsEl);
 
     return () => {
-      heroObserver.disconnect();
       tabsObserver.disconnect();
     };
   }, []);
@@ -103,11 +93,11 @@ function App() {
           />
         )}
       </AnimatePresence>
-      <div ref={heroRef}>
+      <div>
         <Hero startCountdown={introDismissed} />
       </div>
 
-      <div className={`sticky top-0 z-[1000] bg-secondary/40 backdrop-blur-sm transition-colors duration-300 ${tabsVisible ? "" : "hidden"}`}>
+      <div className={`sticky top-0 z-[1000] bg-secondary/40 backdrop-blur-sm transition duration-300 ${tabsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
         <div className="mx-auto flex max-w-3xl justify-center gap-8 px-6 py-6">
           {tabs.map((tab) => (
             <button
