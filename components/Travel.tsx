@@ -2,19 +2,23 @@ const airlines = [
   {
     name: "Malaysia Airlines",
     description: "National carrier with direct flights from major cities",
+    url: "https://www.malaysiaairlines.com/au/en/home.html",
   },
   {
     name: "Air Asia",
     description: "Budget-friendly option with frequent direct flights",
+    url: "https://www.airasia.com/en/gb",
   },
   {
     name: "Singapore Airlines",
     description: "Via Singapore, frequent daily flights",
+    url: "https://www.singaporeair.com/en_UK/booking/",
   },
   {
     name: "Scoot Airlines",
     description:
       "Lowest cost option, typically with long layovers in Singapore",
+    url: "https://www.flyscoot.com/en",
   },
 ];
 
@@ -130,9 +134,12 @@ export function Travel() {
             </h3>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               {airlines.map((airline) => (
-                <div
+                <a
                   key={airline.name}
-                  className="rounded-lg border border-border p-4"
+                  href={airline.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-lg border border-border p-4 transition hover:border-hibiscus hover:bg-hibiscus/5"
                 >
                   <h4 className="font-display text-lg text-foreground">
                     {airline.name}
@@ -140,7 +147,7 @@ export function Travel() {
                   <p className="mt-1 text-sm text-muted-foreground">
                     {airline.description}
                   </p>
-                </div>
+                </a>
               ))}
             </div>
           </div>

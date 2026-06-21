@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IntroOverlay } from "@/components/IntroOverlay";
 import { Hero } from "@/components/Hero";
@@ -6,14 +6,16 @@ import { WeddingInfo } from "@/components/WeddingInfo";
 import { Travel } from "@/components/Travel";
 import { Explore } from "@/components/Explore";
 import { FAQ } from "@/components/FAQ";
+import { PreWedding } from "@/components/PreWedding";
 import { RSVP } from "@/components/RSVP";
 import { Toaster } from "@/components/ui/sonner";
 
-type Tab = "info" | "travel" | "explore" | "faq";
+type Tab = "info" | "travel" | "explore" | "faq" | "pre-wedding";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "info", label: "Info" },
   { id: "travel", label: "Travel" },
+  { id: "pre-wedding", label: "Events" },
   { id: "explore", label: "Explore" },
   { id: "faq", label: "FAQ" },
 ];
@@ -22,10 +24,48 @@ function App() {
   const [activeTab, setActiveTab] = useState<Tab>("info");
   const [showOverlay, setShowOverlay] = useState(true);
   const [introDismissed, setIntroDismissed] = useState(false);
+  const [direction, setDirection] = useState(1);
+  const [isStuck, setIsStuck] = useState(false);
+  const [tabsVisible, setTabsVisible] = useState(true);
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const heroEl = heroRef.current;
+    const tabsEl = tabsRef.current;
+    if (!heroEl || !tabsEl) return;
+
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+
+    const tabsObserver = new IntersectionObserver(
+      ([entry]) => setTabsVisible(entry.isIntersecting),
+      { threshold: 0 }
+    );
+
+    heroObserver.observe(heroEl);
+    tabsObserver.observe(tabsEl);
+
+    return () => {
+      heroObserver.disconnect();
+      tabsObserver.disconnect();
+    };
+  }, []);
 
   const currentIndex = tabs.findIndex((t) => t.id === activeTab);
+
+  const navigateToTab = useCallback(
+    (tab: Tab) => {
+      const newIndex = tabs.findIndex((t) => t.id === tab);
+      setDirection(newIndex > currentIndex ? 1 : -1);
+      setActiveTab(tab);
+    },
+    [currentIndex],
+  );
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     if ((e.target as HTMLElement).closest(".leaflet-container")) return;
@@ -43,12 +83,12 @@ function App() {
       if (Math.abs(dy) > maxVerticalForSwipe) return;
       if (Math.abs(dx) < minSwipe) return;
       if (dx > 0 && currentIndex < tabs.length - 1) {
-        setActiveTab(tabs[currentIndex + 1].id);
+        navigateToTab(tabs[currentIndex + 1].id);
       } else if (dx < 0 && currentIndex > 0) {
-        setActiveTab(tabs[currentIndex - 1].id);
+        navigateToTab(tabs[currentIndex - 1].id);
       }
     },
-    [currentIndex],
+    [currentIndex, navigateToTab],
   );
 
   return (
@@ -63,14 +103,16 @@ function App() {
           />
         )}
       </AnimatePresence>
-      <Hero startCountdown={introDismissed} />
+      <div ref={heroRef}>
+        <Hero startCountdown={introDismissed} />
+      </div>
 
-      <div className="bg-secondary/40">
+      <div className={`sticky top-0 z-[1000] bg-secondary/40 backdrop-blur-sm transition-colors duration-300 ${tabsVisible ? "" : "hidden"}`}>
         <div className="mx-auto flex max-w-3xl justify-center gap-8 px-6 py-6">
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => navigateToTab(tab.id)}
               className="relative font-body text-sm tracking-[0.2em] uppercase transition"
             >
               <span
@@ -94,16 +136,23 @@ function App() {
       </div>
 
       <div
+        ref={tabsRef}
         className="bg-secondary/40 relative overflow-hidden touch-pan-y"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
+            custom={direction}
+            variants={{
+              enter: (dir: number) => ({ opacity: 0, x: dir * 100 }),
+              center: { opacity: 1, x: 0 },
+              exit: (dir: number) => ({ opacity: 0, x: dir * -100 }),
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
             transition={{ duration: 0.4, ease: "easeOut" }}
             className="w-full"
           >
@@ -111,6 +160,7 @@ function App() {
             {activeTab === "travel" && <Travel />}
             {activeTab === "explore" && <Explore />}
             {activeTab === "faq" && <FAQ />}
+            {activeTab === "pre-wedding" && <PreWedding />}
           </motion.div>
         </AnimatePresence>
       </div>
