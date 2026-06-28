@@ -1,17 +1,6 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-const schedule = [
-  { time: "4:00 PM", event: "Ceremony" },
-  { time: "5:30 PM", event: "Cocktail Hour" },
-  { time: "6:30 PM", event: "Reception" },
-  { time: "7:00 PM", event: "Speeches" },
-  { time: "7:30 PM", event: "Dinner" },
-  { time: "8:30 PM", event: "First Dance" },
-  { time: "9:00 PM", event: "Party" },
-];
-
 const venue = {
   name: "Botanica + Co Bamboo Hills",
   address:
