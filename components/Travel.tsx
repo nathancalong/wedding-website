@@ -9,17 +9,6 @@ const airlines = [
     description: "Budget-friendly option with frequent direct flights",
     url: "https://www.airasia.com/en/gb",
   },
-  {
-    name: "Singapore Airlines",
-    description: "Via Singapore, frequent daily flights",
-    url: "https://www.singaporeair.com/en_UK/booking/",
-  },
-  {
-    name: "Scoot Airlines",
-    description:
-      "Lowest cost option, typically with long layovers in Singapore",
-    url: "https://www.flyscoot.com/en",
-  },
 ];
 
 export function Travel() {
@@ -72,7 +61,7 @@ export function Travel() {
               Visa Information
             </h3>
             <p className="mt-4 text-foreground/80 leading-relaxed">
-              You must complete a{" "}
+              For those traveling, you must complete a{" "}
               <strong>
                 <a
                   href="https://imigresen-online.imi.gov.my/mdac/main"

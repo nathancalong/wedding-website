@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import img1 from "@/assets/image1.jpg";
-import img2 from "@/assets/image2.jpg";
-import img3 from "@/assets/image3.jpg";
+import img2 from "@/assets/image2.jpeg";
+import img3 from "@/assets/image3.jpeg";
 import img4 from "@/assets/image4.jpg";
-import img5 from "@/assets/image5.jpg";
-import img6 from "@/assets/image6.jpg";
+import img5 from "@/assets/image5.jpeg";
 import { HeroHeader } from "@/components/HeroHeader";
 import { ImageCarousel } from "@/components/ImageCarousel";
 
@@ -14,7 +13,6 @@ const images = [
   { src: img3, alt: "Sasha and Nathan 3" },
   { src: img4, alt: "Sasha and Nathan 4" },
   { src: img5, alt: "Sasha and Nathan 5" },
-  { src: img6, alt: "Sasha and Nathan 6" },
 ];
 
 const weddingDate = new Date("2027-03-26T16:00:00");

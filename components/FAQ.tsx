@@ -7,28 +7,33 @@ import {
 
 const faqs = [
   {
-    q: "Do I need a visa to visit Malaysia?",
-    a: "Most nationalities receive a 90-day visa on arrival. We recommend checking your country's specific requirements at least three months before traveling.",
+    q: "Can I take photos during the ceremony?",
+    a: "We'd love for you to be fully present with us during the ceremony. We're having an unplugged ceremony, so please keep phones and cameras away until cocktail hour. Our professional photographers will capture everything beautifully, and plenty of photos will be shared post celebrations.",
   },
   {
-    q: "Where should I stay?",
-    a: "We'll be sharing a curated list of recommended hotels in Kuala Lumpur, ranging from boutique stays in the city center to luxury options near the Petronas Towers.",
+    q: "Is the ceremony indoors or outdoors?",
+    a: "The ceremony and reception will be held at Botanica + Co Bamboo Hills, which features both indoor and outdoor spaces. We'll be making the most of the outdoor setting for our ceremony, so do consider this for dress accordingly and preparing for some warm, humid weather until the celebrations move indoors.",
   },
   {
-    q: "What's the weather like?",
-    a: "Tropical and warm year-round — expect 28–32°C (82–90°F) with occasional showers. Pack light, breathable clothing.",
-  },
-  {
-    q: "Will there be transportation provided?",
-    a: "Shuttles will run between the recommended hotels and the venue on the wedding day. Details will arrive with your invitation.",
+    q: "Is there parking at the venue?",
+    a: "Yes — Botanica + Co Bamboo Hills has on-site parking available and have ensured us that all guests traveling by car would have a spot available for them.",
   },
   {
     q: "Can I bring a plus one?",
-    a: "Plus ones will be specified on your invitation. If you have questions, please reach out to us directly.",
+    a: "If you would like to include more than on your current invitation, please reach out to us directly. We are considering numbers and availability of the venue.",
   },
   {
-    q: "Are children welcome?",
-    a: "We adore little ones, but our celebration is adults-only. We hope this gives you a chance to enjoy the evening fully.",
+    q: "Should I arrive early?",
+    a: "We recommend arriving at least 15-20 minutes before the ceremony start time to settle in.",
+  },
+  // TODO: q: "Will there be transportation provided?",
+  {
+    q: "What's the weather like around the ceremony time of year?",
+    a: "Tropical and warm year-round, expect 28-32°C with occasional showers or heavier rain, mostly in the afternoons. Pack light, breathable clothing.",
+  },
+  {
+    q: "Do you have a gift registry?",
+    a: "Your presence is the greatest gift of all. We appreciate the time, leave and travel that you would undertake to join us on our special day. If you feel you must gift us something, please contact the couple directly.",
   },
 ];
 
@@ -38,7 +43,9 @@ export function FAQ() {
       <div className="mx-auto max-w-3xl px-6">
         <div className="text-center">
           <p className="font-script text-3xl text-hibiscus">Good to know</p>
-          <h2 className="mt-2 text-4xl md:text-6xl text-foreground">Frequently Asked</h2>
+          <h2 className="mt-2 text-4xl md:text-6xl text-foreground">
+            Frequently Asked
+          </h2>
           <div className="mx-auto mt-4 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
         </div>
 

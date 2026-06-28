@@ -13,7 +13,7 @@ export function PreWedding() {
         </div>
 
         <div className="mt-10 space-y-6">
-          <p className="text-center font-display text-xl md:text-xl text-foreground">
+          <p className="text-center font-display text-xl text-hibiscus md:text-xl">
             24 March 2027 · Location TBD · Kuala Lumpur, Malaysia
           </p>
 

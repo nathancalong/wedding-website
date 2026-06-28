@@ -9,7 +9,7 @@ interface Place {
   address: string;
   lat: number;
   lng: number;
-  category: "accommodation" | "sightseeing";
+  category: "accommodation" | "sightseeing" | "shopping" | "food";
 }
 
 const places: Place[] = [
@@ -77,16 +77,74 @@ const places: Place[] = [
     lng: 101.7065,
     category: "sightseeing",
   },
+  {
+    name: "Pavilion Kuala Lumpur",
+    description: "Premier shopping destination",
+    details: "One of KL's most iconic malls, featuring over 700 luxury and high-street brands, a stunning rooftop garden, and an incredible food court. Located right in the heart of Bukit Bintang.",
+    address: "168 Jalan Bukit Bintang, 55100 Kuala Lumpur",
+    lat: 3.1465,
+    lng: 101.7092,
+    category: "shopping",
+  },
+  {
+    name: "Suria KLCC",
+    description: "Upscale mall at the Petronas base",
+    details: "A premier shopping centre beneath the Petronas Towers, home to high-end boutiques, a science centre, an art gallery, and a lush park with a stunning fountain show at night.",
+    address: "Kuala Lumpur City Centre, 50088 Kuala Lumpur",
+    lat: 3.1565,
+    lng: 101.7105,
+    category: "shopping",
+  },
+  {
+    name: "Central Market",
+    description: "Cultural landmark & artisan market",
+    details: "A heritage Art Deco building transformed into a vibrant market for Malaysian arts, crafts, and batik. Perfect for finding unique souvenirs, local snacks, and traditional handcrafted goods.",
+    address: "Jalan Hang Kasturi, 50050 Kuala Lumpur",
+    lat: 3.1487,
+    lng: 101.6958,
+    category: "shopping",
+  },
+  {
+    name: "Jalan Alor",
+    description: "Iconic street food destination",
+    details: "KL's most famous food street, lined with open-air hawker stalls serving satay, grilled seafood, noodles, and durian. The atmosphere is electric — especially after dark.",
+    address: "Jalan Alor, Bukit Bintang, 50200 Kuala Lumpur",
+    lat: 3.1435,
+    lng: 101.7025,
+    category: "food",
+  },
+  {
+    name: "Atmosphere 360",
+    description: "Revolving restaurant with city views",
+    details: "A unique revolving restaurant atop Kuala Lumpur Tower, serving an international buffet with panoramic 360-degree views of the city skyline. Perfect for a special evening.",
+    address: "Menara Kuala Lumpur, Jalan Puncak, 50250 Kuala Lumpur",
+    lat: 3.1526,
+    lng: 101.7036,
+    category: "food",
+  },
+  {
+    name: "Viki's Wanderland",
+    description: "Hidden cafe & wedding favours HQ",
+    details: "Our very own cafe and gift shop — a cosy spot for specialty coffee, handmade cakes, and unique wedding favours. Run with love by the couple themselves!",
+    address: "Kuala Lumpur",
+    lat: 3.1495,
+    lng: 101.7095,
+    category: "food",
+  },
 ];
 
 const categoryColors: Record<Place["category"], string> = {
   accommodation: "#3b82f6",
   sightseeing: "#f97316",
+  shopping: "#10b981",
+  food: "#ec4899",
 };
 
 const categoryLabels: Record<Place["category"], string> = {
-  accommodation: "Where to stay",
-  sightseeing: "Things to see",
+  accommodation: "Accommodation",
+  sightseeing: "Attractions",
+  shopping: "Shopping",
+  food: "Food & Drink",
 };
 
 function createMarkerIcon(color: string) {

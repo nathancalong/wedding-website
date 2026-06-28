@@ -59,15 +59,15 @@ export function WeddingInfo() {
           <div className="mx-auto mt-4 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
         </div>
 
-        <div className="mt-10 space-y-6">
+        <div className="mt-10 space-y-2">
           <div>
-            <h3 className="font-display text-2xl text-hibiscus">The Venue</h3>
-            <h2 className="font-display text-2xl text-foreground">
+            <h3 className="font-display text-2xl text-hibiscus text-center">
               Botanica + Co Bamboo Hills
-            </h2>
+            </h3>
+            <h2 className="font-display text-2xl text-foreground"></h2>
           </div>
 
-          <div className="relative mt-10">
+          <div className="relative mb-6">
             <div
               ref={mapRef}
               className="h-[400px] w-full rounded-lg border border-border"
@@ -82,25 +82,29 @@ export function WeddingInfo() {
             </a>
           </div>
 
-          <p className="mt-8 text-center text-lg text-foreground/80">
-            Dress code: Tropical formal — light fabrics, bold colors, and your
-            most joyful attire.
-          </p>
+          <div className="mt-10 space-y-6">
+            <div>
+              <h3 className="font-display text-2xl text-hibiscus">
+                Event details
+              </h3>
+              <p className="mt-4 text-foreground/80 leading-relaxed">
+                Ceremony to be hosted outdoors in the gardens of Botanica + Co,
+                with the reception to follow.
+              </p>
+              <p className="mt-4 text-foreground/80 leading-relaxed">
+                <span className="bold">Start time: </span>
+              </p>
+            </div>
 
-          <div className="mt-12 space-y-0">
-            {schedule.map(({ time, event }, idx) => (
-              <div
-                key={event}
-                className={`flex items-center gap-6 py-4 ${idx !== schedule.length - 1 ? "border-b border-border/60" : ""}`}
-              >
-                <span className="font-display text-xl text-hibiscus w-24">
-                  {time}
-                </span>
-                <span className="font-display text-xl text-foreground flex-1">
-                  {event}
-                </span>
-              </div>
-            ))}
+            <div>
+              <h3 className="font-display text-2xl text-hibiscus">
+                Dress Code
+              </h3>
+              <p className="mt-4 text-foreground/80 leading-relaxed">
+                Cultural attire is encouraged, semi-formal outfits are also
+                welcome.
+              </p>
+            </div>
           </div>
         </div>
       </div>
