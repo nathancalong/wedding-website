@@ -6,11 +6,12 @@ export const config = {
 
 interface RSVPRow {
   id?: number;
-  name: string;
+  eventType: string;
+  groupKey: string;
   email: string;
-  attending: boolean;
-  preWedding: boolean;
   message: string;
+  dietaryRequirements?: string;
+  responses: string;
 }
 
 export default async function handler(req: Request) {
@@ -27,35 +28,26 @@ export default async function handler(req: Request) {
   if (req.method === "GET") {
     try {
       const url = new URL(req.url);
-      const name = url.searchParams.get("name");
-      const email = url.searchParams.get("email");
+      const groupKey = url.searchParams.get("groupKey");
+      const eventType = url.searchParams.get("eventType");
 
-      if (!name) {
+      if (!groupKey || !eventType) {
         return new Response(
-          JSON.stringify({ error: "Name parameter is required" }),
+          JSON.stringify({ error: "groupKey and eventType are required" }),
           { status: 400, headers: { "Content-Type": "application/json" } }
         );
       }
 
-      let result;
-      if (email) {
-        result = await sql`
-          SELECT id, name, email, attending, pre_wedding, message
-          FROM rsvps
-          WHERE name = ${name} AND email = ${email}
-          ORDER BY created_at DESC
-        `;
-      } else {
-        result = await sql`
-          SELECT id, name, email, attending, pre_wedding, message
-          FROM rsvps
-          WHERE name = ${name}
-          ORDER BY created_at DESC
-        `;
-      }
+      const result = await sql`
+        SELECT id, event_type, group_key, email, message, dietary_requirements, responses
+        FROM rsvps
+        WHERE group_key = ${groupKey} AND event_type = ${eventType}
+        ORDER BY created_at DESC
+        LIMIT 1
+      `;
 
       return new Response(
-        JSON.stringify({ rsvps: result }),
+        JSON.stringify({ rsvp: result.length > 0 ? result[0] : null }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     } catch (error) {
@@ -84,35 +76,26 @@ export default async function handler(req: Request) {
     }
 
     const body = JSON.parse(text);
-    const { rows }: { rows: RSVPRow[] } = body;
+    const { row }: { row: RSVPRow } = body;
 
-    if (!rows || rows.length === 0) {
+    if (!row || !row.groupKey || !row.email || !row.eventType) {
       return new Response(
-        JSON.stringify({ error: "At least one row is required" }),
+        JSON.stringify({ error: "Group key, email, and event type are required" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    for (const row of rows) {
-      if (!row.name || !row.email) {
-        return new Response(
-          JSON.stringify({ error: "Name and email are required for each row" }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
-        );
-      }
-
-      if (row.id) {
-        await sql`
-          UPDATE rsvps
-          SET email = ${row.email}, attending = ${row.attending}, pre_wedding = ${row.preWedding}, message = ${row.message ?? ""}
-          WHERE id = ${row.id}
-        `;
-      } else {
-        await sql`
-          INSERT INTO rsvps (name, email, attending, pre_wedding, message)
-          VALUES (${row.name}, ${row.email}, ${row.attending}, ${row.preWedding ?? false}, ${row.message ?? ""})
-        `;
-      }
+    if (row.id) {
+      await sql`
+        UPDATE rsvps
+        SET email = ${row.email}, message = ${row.message ?? ""}, dietary_requirements = ${row.dietaryRequirements ?? ""}, responses = ${row.responses ?? "[]"}
+        WHERE id = ${row.id}
+      `;
+    } else {
+      await sql`
+        INSERT INTO rsvps (event_type, group_key, email, message, dietary_requirements, responses)
+        VALUES (${row.eventType}, ${row.groupKey}, ${row.email}, ${row.message ?? ""}, ${row.dietaryRequirements ?? ""}, ${row.responses ?? "[]"})
+      `;
     }
 
     return new Response(

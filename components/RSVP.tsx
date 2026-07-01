@@ -1,11 +1,17 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Popover,
   PopoverContent,
@@ -24,29 +30,30 @@ const nameToGroup = Object.fromEntries(
   ),
 );
 
-export function RSVP() {
-  const [attending, setAttending] = useState("yes");
-  const [preWedding, setPreWedding] = useState("yes");
+interface Member {
+  name: string;
+  attending: boolean;
+}
+
+interface RsvpFormProps {
+  eventType: "wedding" | "pre-wedding";
+}
+
+function RsvpForm({ eventType }: RsvpFormProps) {
   const [nameInput, setNameInput] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
-  const [extraMembers, setExtraMembers] = useState<string[]>([]);
-  const [checkedMembers, setCheckedMembers] = useState<string[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailInput, setEmailInput] = useState("");
-  const [existingRsvps, setExistingRsvps] = useState<
-    Array<{
-      id: number;
-      name: string;
-      email: string;
-      attending: boolean;
-      pre_wedding: boolean;
-      message: string;
-    }>
-  >([]);
-  const [mainMessage, setMainMessage] = useState("");
+  const [existingId, setExistingId] = useState<number | null>(null);
+  const [message, setMessage] = useState("");
+  const [dietaryRequirements, setDietaryRequirements] = useState("");
   const listRef = useRef<HTMLUListElement>(null);
+
+  const label = eventType === "wedding" ? "Wedding" : "Pre-wedding";
+  const title = eventType === "wedding" ? "Wedding RSVP" : "Pre-wedding RSVP";
 
   const matches = useMemo(() => {
     if (!nameInput.trim()) return [];
@@ -59,44 +66,47 @@ export function RSVP() {
     if (match) {
       setSelectedGroup(match);
       const all = match.split(", ").filter(Boolean);
-      const others = all.filter(
-        (m) => m.toLowerCase() !== value.trim().toLowerCase(),
-      );
-      setExtraMembers(others);
-      setCheckedMembers(others);
+      setMembers(all.map((name) => ({ name, attending: true })));
     } else {
       setSelectedGroup("");
-      setExtraMembers([]);
-      setCheckedMembers([]);
+      setMembers([]);
     }
   }, []);
 
-  const lookupRsvp = useCallback(async (name: string) => {
-    try {
-      const res = await fetch(`/api/rsvp?name=${encodeURIComponent(name)}`);
-      const data = await res.json();
-      if (data.rsvps && data.rsvps.length > 0) {
-        setExistingRsvps(data.rsvps);
-        const main = data.rsvps.find(
-          (r: { name: string }) =>
-            r.name.toLowerCase() === name.trim().toLowerCase(),
+  const lookupRsvp = useCallback(
+    async (group: string) => {
+      try {
+        const res = await fetch(
+          `/api/rsvp?groupKey=${encodeURIComponent(group)}&eventType=${eventType}`,
         );
-        if (main) {
-          setAttending(main.attending ? "yes" : "no");
-          setPreWedding(main.pre_wedding ? "yes" : "no");
-          setMainMessage(main.message ?? "");
+        const data = await res.json();
+        if (data.rsvp) {
+          setExistingId(data.rsvp.id);
+          setEmailInput(data.rsvp.email ?? "");
+          setMessage(data.rsvp.message ?? "");
+          setDietaryRequirements(data.rsvp.dietary_requirements ?? "");
+          try {
+            const parsed = JSON.parse(data.rsvp.responses ?? "[]");
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setMembers(parsed);
+            }
+          } catch {
+            // ignore malformed responses
+          }
         }
+      } catch {
+        // silent
       }
-    } catch {
-      // silent — allow normal submission
-    }
-  }, []);
+    },
+    [eventType],
+  );
 
   const handleSelect = useCallback(
     (name: string) => {
       setNameInput(name);
       resolveName(name);
-      lookupRsvp(name);
+      const group = nameToGroup[name.trim().toLowerCase()];
+      if (group) lookupRsvp(group);
       setOpen(false);
     },
     [resolveName, lookupRsvp],
@@ -136,9 +146,11 @@ export function RSVP() {
     [open, matches, highlightedIndex, handleSelect],
   );
 
-  function toggleMember(name: string) {
-    setCheckedMembers((prev) =>
-      prev.includes(name) ? prev.filter((m) => m !== name) : [...prev, name],
+  function toggleAttending(name: string) {
+    setMembers((prev) =>
+      prev.map((m) =>
+        m.name === name ? { ...m, attending: !m.attending } : m,
+      ),
     );
   }
 
@@ -146,31 +158,21 @@ export function RSVP() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const mainEmail = emailInput;
-    const names = [nameInput, ...(attending === "yes" ? checkedMembers : [])];
-
-    const rows = names.map((n) => {
-      const existing = existingRsvps.find(
-        (r) => r.name.toLowerCase() === n.trim().toLowerCase(),
-      );
-      const owns = existing && existing.email === mainEmail;
-      return {
-        id: owns ? existing.id : undefined,
-        name: n,
-        email: mainEmail,
-        attending: attending === "yes",
-        preWedding: preWedding === "yes",
-        message: n === nameInput ? mainMessage : "",
-      };
-    });
-
-    const payload = { rows };
+    const row = {
+      id: existingId ?? undefined,
+      eventType,
+      groupKey: selectedGroup,
+      email: emailInput,
+      message,
+      dietaryRequirements,
+      responses: JSON.stringify(members),
+    };
 
     try {
       const res = await fetch("/api/rsvp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ row }),
       });
 
       const data = await res.json();
@@ -178,26 +180,199 @@ export function RSVP() {
         throw new Error(data.error || "Failed to submit");
       }
 
-      toast.success("Thank you! Your RSVP has been received.", {
-        description: "We can't wait to celebrate with you in Malaysia.",
+      toast.success(`Your ${label.toLowerCase()} RSVP has been received!`, {
+        description:
+          eventType === "wedding"
+            ? "We can't wait to see you at the wedding."
+            : "Looking forward to seeing you at the pre-wedding event.",
       });
       e.currentTarget.reset();
-      setAttending("yes");
       setNameInput("");
       setSelectedGroup("");
-      setExtraMembers([]);
-      setCheckedMembers([]);
-      setExistingRsvps([]);
-      setMainMessage("");
+      setMembers([]);
+      setExistingId(null);
+      setMessage("");
+      setDietaryRequirements("");
       setEmailInput("");
-      return;
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  return (
+    <div>
+      <div className="mb-6 text-center">
+        <div className="inline-block text-center">
+          <h3 className="text-3xl font-medium">{title}</h3>
+          <div className="mt-3 h-px bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
+        </div>
+        <p className="mt-4 text-md text-muted-foreground font-muted-foreground">
+          {eventType === "pre-wedding"
+            ? "24 March 2027 · Location TBD · Kuala Lumpur"
+            : "26 March 2027 · Botanica + Co Bamboo Hills · Kuala Lumpur"}
+        </p>
+      </div>
+      <form
+        onSubmit={onSubmit}
+        className="rounded-2xl border border-border bg-card p-8 md:p-10 shadow-xl shadow-primary/5"
+      >
+        <div className="grid gap-5">
+          <div className="grid gap-2">
+            <Label htmlFor={`name-${eventType}`}>Full Name</Label>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <div className="relative">
+                  <Input
+                    id={`name-${eventType}`}
+                    name="name"
+                    required
+                    placeholder="Your name"
+                    value={nameInput}
+                    autoComplete="false"
+                    data-1p-ignore
+                    data-form-type="other"
+                    onChange={(e) => {
+                      setNameInput(e.target.value);
+                      resolveName(e.target.value);
+                    }}
+                    onFocus={() => {
+                      if (nameInput.trim()) setOpen(true);
+                    }}
+                    onKeyDown={handleKeyDown}
+                    className="pr-10"
+                  />
+                  <ChevronsUpDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent
+                className="p-0"
+                align="start"
+                sideOffset={4}
+                style={{ width: "var(--radix-popover-trigger-width)" }}
+                onOpenAutoFocus={(e) => e.preventDefault()}
+              >
+                <ul ref={listRef} className="max-h-48 overflow-y-auto p-1">
+                  {matches.length === 0 ? (
+                    <li className="py-6 text-center text-sm text-muted-foreground">
+                      No matching names
+                    </li>
+                  ) : (
+                    matches.map((name, i) => (
+                      <li
+                        key={name}
+                        role="option"
+                        aria-selected={highlightedIndex === i}
+                        data-index={i}
+                        onClick={() => handleSelect(name)}
+                        onMouseEnter={() => setHighlightedIndex(i)}
+                        className={cn(
+                          "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition",
+                          highlightedIndex === i
+                            ? "bg-accent text-accent-foreground"
+                            : "hover:bg-accent hover:text-accent-foreground",
+                        )}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            nameInput.toLowerCase() === name.toLowerCase()
+                              ? "opacity-100"
+                              : "opacity-0",
+                          )}
+                        />
+                        {name}
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor={`email-${eventType}`}>Email</Label>
+            <Input
+              id={`email-${eventType}`}
+              name="email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+            />
+          </div>
+
+          {selectedGroup && (
+            <div className="grid gap-3">
+              <Label>Who's attending the {label.toLowerCase()}?</Label>
+              <div className="grid gap-2">
+                {members.map((member) => (
+                  <Label
+                    key={member.name}
+                    className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus"
+                  >
+                    <Checkbox
+                      checked={member.attending}
+                      onCheckedChange={() => toggleAttending(member.name)}
+                    />
+                    {member.name}
+                  </Label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="grid gap-2">
+            <Label htmlFor={`dietary-${eventType}`}>Dietary requirements</Label>
+            <Select
+              value={dietaryRequirements}
+              onValueChange={setDietaryRequirements}
+            >
+              <SelectTrigger id={`dietary-${eventType}`}>
+                <SelectValue placeholder="Select dietary requirements" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="vegetarian">Vegetarian</SelectItem>
+                <SelectItem value="vegan">Vegan</SelectItem>
+                <SelectItem value="gluten-free">Gluten-free</SelectItem>
+                <SelectItem value="dairy-free">Dairy-free</SelectItem>
+                <SelectItem value="nut-allergy">Nut allergy</SelectItem>
+                <SelectItem value="other">Other (Please specify)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor={`message-${eventType}`}>
+              Message for the couple (optional)
+            </Label>
+            <Textarea
+              id={`message-${eventType}`}
+              name="message"
+              placeholder="A message, song request, or anything else..."
+              rows={4}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-hibiscus px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? "Sending..." : `RSVP for the ${label}`}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export function RSVP() {
   return (
     <section id="rsvp" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-2xl px-4">
@@ -208,194 +383,23 @@ export function RSVP() {
           <h2 className="mt-2 text-4xl md:text-6xl text-foreground">RSVP</h2>
           <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
           <p className="mt-6 text-muted-foreground">
-            Kindly respond by January, 2027.
+            Kindly respond by <span className="font-bold">January, 2027</span>.
           </p>
-          <p className="mt-2 text-muted-foreground">
+          <p className="text-muted-foreground">
             We're so excited to celebrate with you.
+          </p>
+
+          <p className="mt-8 text-muted-foreground">
+            If you're unsure about your attendance to the pre-wedding event,
+            please still submit your RSVP for the wedding. This would help us in
+            planning for our special day.
           </p>
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="mt-12 rounded-2xl border border-border bg-card p-8 md:p-10 shadow-xl shadow-primary/5"
-        >
-          <div className="grid gap-5">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
-                  <div className="relative">
-                    <Input
-                      id="name"
-                      name="name"
-                      required
-                      placeholder="Your name"
-                      value={nameInput}
-                      autoComplete="off"
-                      onChange={(e) => {
-                        setNameInput(e.target.value);
-                        resolveName(e.target.value);
-                      }}
-                      onFocus={() => {
-                        if (nameInput.trim()) setOpen(true);
-                      }}
-                      onKeyDown={handleKeyDown}
-                      className="pr-10"
-                    />
-                    <ChevronsUpDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  </div>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="p-0"
-                  align="start"
-                  sideOffset={4}
-                  style={{ width: "var(--radix-popover-trigger-width)" }}
-                  onOpenAutoFocus={(e) => e.preventDefault()}
-                >
-                  <ul ref={listRef} className="max-h-48 overflow-y-auto p-1">
-                    {matches.length === 0 ? (
-                      <li className="py-6 text-center text-sm text-muted-foreground">
-                        No matching names
-                      </li>
-                    ) : (
-                      matches.map((name, i) => (
-                        <li
-                          key={name}
-                          role="option"
-                          aria-selected={highlightedIndex === i}
-                          data-index={i}
-                          onClick={() => handleSelect(name)}
-                          onMouseEnter={() => setHighlightedIndex(i)}
-                          className={cn(
-                            "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition",
-                            highlightedIndex === i
-                              ? "bg-accent text-accent-foreground"
-                              : "hover:bg-accent hover:text-accent-foreground",
-                          )}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              nameInput.toLowerCase() === name.toLowerCase()
-                                ? "opacity-100"
-                                : "opacity-0",
-                            )}
-                          />
-                          {name}
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {selectedGroup &&
-              extraMembers.length > 0 &&
-              attending === "yes" && (
-                <div className="grid gap-3">
-                  <Label>Additional guests</Label>
-                  <div className="grid gap-2">
-                    {extraMembers.map((name) => (
-                      <Label
-                        key={name}
-                        className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus"
-                      >
-                        <Checkbox
-                          checked={checkedMembers.includes(name)}
-                          onCheckedChange={() => toggleMember(name)}
-                        />
-                        {name}
-                      </Label>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                placeholder="you@example.com"
-                value={emailInput}
-                onChange={(e) => setEmailInput(e.target.value)}
-              />
-            </div>
-
-            <div className="grid gap-3">
-              <Label>Will you be attending the wedding?</Label>
-              <RadioGroup
-                name="attending"
-                value={attending}
-                onValueChange={setAttending}
-                className="grid grid-cols-2 gap-3"
-              >
-                <Label
-                  htmlFor="yes"
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus has-[[data-state=checked]]:bg-accent/30"
-                >
-                  <RadioGroupItem value="yes" id="yes" />
-                  Joyfully accepts
-                </Label>
-                <Label
-                  htmlFor="no"
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus has-[[data-state=checked]]:bg-accent/30"
-                >
-                  <RadioGroupItem value="no" id="no" />
-                  Regretfully declines
-                </Label>
-              </RadioGroup>
-            </div>
-
-            <div className="grid gap-3">
-              <Label>Will you be joining us at the pre-wedding event?</Label>
-              <RadioGroup
-                name="preWedding"
-                value={preWedding}
-                onValueChange={setPreWedding}
-                className="grid grid-cols-2 gap-3"
-              >
-                <Label
-                  htmlFor="pre-yes"
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus has-[[data-state=checked]]:bg-accent/30"
-                >
-                  <RadioGroupItem value="yes" id="pre-yes" />
-                  Joyfully accepts
-                </Label>
-                <Label
-                  htmlFor="pre-no"
-                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus has-[[data-state=checked]]:bg-accent/30"
-                >
-                  <RadioGroupItem value="no" id="pre-no" />
-                  Regretfully declines
-                </Label>
-              </RadioGroup>
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="message">Message for the couple (optional)</Label>
-              <Textarea
-                id="message"
-                name="message"
-                placeholder="A note, a song request, dietary needs..."
-                rows={4}
-                value={mainMessage}
-                onChange={(e) => setMainMessage(e.target.value)}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-hibiscus px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Sending..." : "Send RSVP"}
-            </button>
-          </div>
-        </form>
+        <div className="mt-12 grid gap-10">
+          <RsvpForm eventType="pre-wedding" />
+          <RsvpForm eventType="wedding" />
+        </div>
       </div>
     </section>
   );
