@@ -76,7 +76,7 @@ export function HeroHeader({
           className="font-display uppercase text-md text-center"
           style={{ color: textColor }}
         >
-          March 26, 2027<span className="hidden sm:inline"> · </span><br class="sm:hidden" />Kuala Lumpur, Malaysia
+          March 26, 2027<span className="hidden sm:inline"> · </span><br className="sm:hidden" />Kuala Lumpur, Malaysia
         </span>
       </DateWrapper>
     </div>

@@ -163,7 +163,7 @@ function App() {
             Sasha <span className="text-hibiscus">&</span> Nathan
           </p>
           <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-            26 March 2027 · Botanica & Co<span className="hidden sm:inline"> · </span><br class="sm:hidden" />Kuala Lumpur, Malaysia
+            26 March 2027 · Botanica & Co<span className="hidden sm:inline"> · </span><br className="sm:hidden" />Kuala Lumpur, Malaysia
           </p>
         </div>
       </footer>
