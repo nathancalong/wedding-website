@@ -1,13 +1,6 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -230,8 +223,9 @@ function RsvpForm({ eventType }: RsvpFormProps) {
                     required
                     placeholder="Your name"
                     value={nameInput}
-                    autoComplete="false"
+                    autoComplete="new-password"
                     data-1p-ignore
+                    data-lpignore="true"
                     data-form-type="other"
                     onChange={(e) => {
                       setNameInput(e.target.value);
@@ -325,24 +319,13 @@ function RsvpForm({ eventType }: RsvpFormProps) {
           )}
 
           <div className="grid gap-2">
-            <Label htmlFor={`dietary-${eventType}`}>Dietary requirements</Label>
-            <Select
+            <Label htmlFor={`dietary-${eventType}`}>Dietary requirements (optional)</Label>
+            <Input
+              id={`dietary-${eventType}`}
+              name="dietary"
               value={dietaryRequirements}
-              onValueChange={setDietaryRequirements}
-            >
-              <SelectTrigger id={`dietary-${eventType}`}>
-                <SelectValue placeholder="Select dietary requirements" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">None</SelectItem>
-                <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                <SelectItem value="vegan">Vegan</SelectItem>
-                <SelectItem value="gluten-free">Gluten-free</SelectItem>
-                <SelectItem value="dairy-free">Dairy-free</SelectItem>
-                <SelectItem value="nut-allergy">Nut allergy</SelectItem>
-                <SelectItem value="other">Other (Please specify)</SelectItem>
-              </SelectContent>
-            </Select>
+              onChange={(e) => setDietaryRequirements(e.target.value)}
+            />
           </div>
 
           <div className="grid gap-2">

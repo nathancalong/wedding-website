@@ -31,7 +31,7 @@ export function Travel() {
                 <a
                   href="https://airports.malaysiaairports.com.my/en/klia1"
                   target="blank"
-                  className="underline"
+                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
                 >
                   Kuala Lumpur International Airport
                 </a>
@@ -44,7 +44,7 @@ export function Travel() {
                 <a
                   href="https://www.grab.com/my/download/"
                   target="blank"
-                  className="underline"
+                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
                 >
                   Grab app
                 </a>
@@ -65,7 +65,7 @@ export function Travel() {
               <strong>
                 <a
                   href="https://imigresen-online.imi.gov.my/mdac/main"
-                  className="underline"
+                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
                   target="blank"
                 >
                   Malaysia Digital Arrival Card (MDAC)
@@ -75,7 +75,7 @@ export function Travel() {
               <a
                 href="https://imigresen-online.imi.gov.my/mdac/main"
                 target="blank"
-                className="underline"
+                className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
               >
                 Malaysian Immigration website
               </a>
@@ -86,7 +86,7 @@ export function Travel() {
               <a
                 href="https://www.smartraveller.gov.au/destinations/asia/malaysia"
                 target="blank"
-                className="underline"
+                className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
               >
                 Australian Government SmartTraveller
               </a>{" "}
@@ -106,7 +106,7 @@ export function Travel() {
               <strong>
                 <a
                   href="https://wise.com/"
-                  className="underline"
+                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
                   target="blank"
                 >
                   Wise

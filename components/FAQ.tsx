@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     q: "Should I arrive early?",
-    a: "We recommend arriving at least 15-20 minutes before the ceremony start time to settle in.",
+    a: "We recommend arriving at least 20-30 minutes before the ceremony start time to settle in. Please allow for some travel time on the day as traffic can vary and add significant time to the journey, even from close by in the city.",
   },
   // TODO: q: "Will there be transportation provided?",
   {

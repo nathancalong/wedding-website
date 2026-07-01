@@ -77,11 +77,15 @@ export function WeddingInfo() {
                 Event details
               </h3>
               <p className="mt-4 text-foreground/80 leading-relaxed">
-                Ceremony to be hosted outdoors in the gardens of Botanica + Co,
-                with the reception to follow.
+                <span className="font-bold">Start time: 4:30pm</span>
               </p>
               <p className="mt-4 text-foreground/80 leading-relaxed">
-                <span className="bold">Start time: </span>
+                We invite guests to arrive at 4pm to be relaxed and seated prior
+                to the start time so the ceremony can begin.
+              </p>
+              <p className="mt-4 text-foreground/80 leading-relaxed">
+                Ceremony to be hosted outdoors in the gardens of Botanica + Co,
+                with the reception to follow.
               </p>
             </div>
 

@@ -303,7 +303,7 @@ export function Explore() {
                     className={`text-left rounded-lg border p-5 transition ${
                       selected?.name === place.name
                         ? "border-hibiscus bg-hibiscus/5"
-                        : "border-border hover:border-border/80"
+                        : "border-border hover:border-hibiscus hover:bg-hibiscus/5"
                     }`}
                   >
                     <h4 className="font-display text-xl text-foreground">

@@ -14,8 +14,8 @@ type Tab = "info" | "travel" | "explore" | "faq" | "pre-wedding";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "info", label: "Info" },
-  { id: "travel", label: "Travel" },
   { id: "pre-wedding", label: "Events" },
+  { id: "travel", label: "Travel" },
   { id: "explore", label: "Explore" },
   { id: "faq", label: "FAQ" },
 ];
@@ -147,10 +147,10 @@ function App() {
             className="w-full"
           >
             {activeTab === "info" && <WeddingInfo />}
+            {activeTab === "pre-wedding" && <PreWedding />}
             {activeTab === "travel" && <Travel />}
             {activeTab === "explore" && <Explore />}
             {activeTab === "faq" && <FAQ />}
-            {activeTab === "pre-wedding" && <PreWedding />}
           </motion.div>
         </AnimatePresence>
       </div>
