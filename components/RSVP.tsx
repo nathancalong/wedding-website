@@ -1,6 +1,5 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { toast } from "sonner";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,6 +42,8 @@ function RsvpForm({ eventType }: RsvpFormProps) {
   const [existingId, setExistingId] = useState<number | null>(null);
   const [message, setMessage] = useState("");
   const [dietaryRequirements, setDietaryRequirements] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
   const listRef = useRef<HTMLUListElement>(null);
 
   const label = eventType === "wedding" ? "Wedding" : "Pre-wedding";
@@ -149,6 +150,7 @@ function RsvpForm({ eventType }: RsvpFormProps) {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError("");
     setIsSubmitting(true);
 
     const row = {
@@ -173,22 +175,10 @@ function RsvpForm({ eventType }: RsvpFormProps) {
         throw new Error(data.error || "Failed to submit");
       }
 
-      toast.success(`Your ${label.toLowerCase()} RSVP has been received!`, {
-        description:
-          eventType === "wedding"
-            ? "We can't wait to see you at the wedding."
-            : "Looking forward to seeing you at the pre-wedding event.",
-      });
-      e.currentTarget.reset();
-      setNameInput("");
-      setSelectedGroup("");
-      setMembers([]);
-      setExistingId(null);
-      setMessage("");
-      setDietaryRequirements("");
-      setEmailInput("");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+      setSubmitted(true);
+      setError("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to submit");
     } finally {
       setIsSubmitting(false);
     }
@@ -344,11 +334,15 @@ function RsvpForm({ eventType }: RsvpFormProps) {
 
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-hibiscus px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting || submitted}
+            className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-hibiscus px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Sending..." : `RSVP for the ${label}`}
+            {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+            {submitted ? "RSVP submitted!" : isSubmitting ? "Sending..." : error ? "Error submitting RSVP" : `RSVP for the ${label}`}
           </button>
+          {error && (
+            <p className="mt-2 text-center text-sm text-red-500">{error}</p>
+          )}
         </div>
       </form>
     </div>
