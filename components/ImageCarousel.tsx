@@ -95,7 +95,7 @@ export function ImageCarousel({ images, opts, className, disabled }: ImageCarous
         <div className="flex">
           {images.map((image, idx) => (
             <div className="relative min-w-0 flex-[0_0_100%] px-2" key={idx}>
-              <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+              <div className="relative aspect-[3/4] sm:aspect-[16/9] overflow-hidden rounded-lg">
                 <img
                   src={image.src}
                   alt={image.alt}

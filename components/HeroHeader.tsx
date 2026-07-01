@@ -57,7 +57,7 @@ export function HeroHeader({
           We're Getting Married
         </P>
         <H1
-          className="mt-4 font-names text-6xl sm:text-6xl md:text-9xl leading-none"
+          className="mt-4 font-names text-5xl sm:text-6xl md:text-9xl leading-none text-nowrap text-center"
           style={{ color: textColor }}
           {...h1Props}
         >
@@ -69,14 +69,14 @@ export function HeroHeader({
         </H1>
       </div>
       <DateWrapper
-        className="mt-10 flex items-center justify-center gap-3 text-lg tracking-[0.15em]"
+        className="mt-6 sm:mt-10 flex items-center justify-center gap-3 text-lg tracking-[0.15em]"
         {...dateProps}
       >
         <span
-          className="font-display uppercase text-md"
+          className="font-display uppercase text-md text-center"
           style={{ color: textColor }}
         >
-          March 26, 2027 · Kuala Lumpur, Malaysia
+          March 26, 2027<span className="hidden sm:inline"> · </span><br class="sm:hidden" />Kuala Lumpur, Malaysia
         </span>
       </DateWrapper>
     </div>

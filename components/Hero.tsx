@@ -39,8 +39,8 @@ export function Hero({ startCountdown }: { startCountdown: boolean }) {
   }, [startCountdown]);
 
   return (
-    <section className="relative min-h-screen w-full bg-background pb-12 md:pb-16">
-      <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
+    <section className="relative min-h-screen w-full bg-background pb-8 md:pb-16">
+      <div className="mx-auto max-w-6xl px-6 pt-12 md:pt-24">
         <HeroHeader />
 
         <div className="mt-4 flex justify-center gap-8 md:gap-16">
@@ -77,7 +77,7 @@ export function Hero({ startCountdown }: { startCountdown: boolean }) {
         </div>
       </div>
 
-      <div className="mt-10 md:mt-12">
+      <div className="mt-6 md:mt-12">
         <ImageCarousel
           images={images}
           className="mx-auto max-w-xl px-4 sm:max-w-xl sm:px-6 md:max-w-3xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-8xl"

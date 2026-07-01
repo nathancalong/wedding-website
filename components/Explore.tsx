@@ -243,7 +243,7 @@ export function Explore() {
             ref={mapRef}
             className="h-[400px] w-full rounded-lg border border-border"
           />
-          <div className="absolute bottom-0 left-0 z-[1000] flex gap-4 rounded-tr-lg rounded-bl-lg bg-white/80 px-4 py-2 text-xs tracking-wider uppercase shadow-sm backdrop-blur-sm">
+          <div className="absolute top-0 right-0 z-[1000] inline-grid grid-cols-2 justify-items-end gap-x-3 gap-y-1 rounded-bl-lg rounded-tr-lg bg-white/80 px-3 py-2 text-xs max-[400px]:text-[10px] tracking-wider uppercase shadow-sm backdrop-blur-sm sm:flex sm:flex-row sm:items-center sm:gap-4 sm:px-4">
             {(Object.keys(categoryColors) as Place["category"][]).map(
               (cat) => (
                 <span key={cat} className="flex items-center gap-1.5">

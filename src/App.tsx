@@ -82,7 +82,7 @@ function App() {
   );
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background overflow-x-hidden touch-pan-y">
       <AnimatePresence>
         {showOverlay && (
           <IntroOverlay
@@ -97,13 +97,13 @@ function App() {
         <Hero startCountdown={introDismissed} />
       </div>
 
-      <div className={`sticky top-0 z-[1000] bg-secondary/40 backdrop-blur-sm transition duration-300 ${tabsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-        <div className="mx-auto flex max-w-3xl justify-center gap-8 px-6 py-6">
+      <div className={`sticky top-0 z-[1100] bg-secondary/40 backdrop-blur-sm transition duration-300 ${tabsVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+        <div className="mx-auto flex max-w-3xl justify-center gap-4 sm:gap-6 md:gap-8 px-4 sm:px-6 py-6">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => navigateToTab(tab.id)}
-              className="relative font-body text-sm tracking-[0.2em] uppercase transition"
+              className="relative font-body text-sm max-[400px]:text-xs tracking-[0.2em] uppercase transition"
             >
               <span
                 className={
@@ -163,7 +163,7 @@ function App() {
             Sasha <span className="text-hibiscus">&</span> Nathan
           </p>
           <p className="mt-2 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-            26 March 2027 · Botanica & Co · Kuala Lumpur, Malaysia
+            26 March 2027 · Botanica & Co<span className="hidden sm:inline"> · </span><br class="sm:hidden" />Kuala Lumpur, Malaysia
           </p>
         </div>
       </footer>

@@ -197,10 +197,10 @@ function RsvpForm({ eventType }: RsvpFormProps) {
           <h3 className="text-3xl font-medium">{title}</h3>
           <div className="mt-3 h-px bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
         </div>
-        <p className="mt-4 text-md text-muted-foreground font-muted-foreground">
+        <p className="mt-4 text-md max-[400px]:text-sm text-muted-foreground font-muted-foreground">
           {eventType === "pre-wedding"
             ? "24 March 2027 · Location TBD · Kuala Lumpur"
-            : "26 March 2027 · Botanica + Co Bamboo Hills · Kuala Lumpur"}
+            : "26 March 2027 · Botanica + Co · Kuala Lumpur"}
         </p>
       </div>
       <form
@@ -315,7 +315,9 @@ function RsvpForm({ eventType }: RsvpFormProps) {
           )}
 
           <div className="grid gap-2">
-            <Label htmlFor={`dietary-${eventType}`}>Dietary requirements (optional)</Label>
+            <Label htmlFor={`dietary-${eventType}`}>
+              Dietary requirements (optional)
+            </Label>
             <Input
               id={`dietary-${eventType}`}
               name="dietary"
@@ -341,10 +343,16 @@ function RsvpForm({ eventType }: RsvpFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-hibiscus px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-hibiscus px-8 py-3 text-xs sm:text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-            {submitted ? "RSVP submitted!" : isSubmitting ? "Sending..." : error ? "Error submitting RSVP" : `RSVP for the ${label}`}
+            {submitted
+              ? "RSVP submitted!"
+              : isSubmitting
+                ? "Sending..."
+                : error
+                  ? "Error submitting RSVP"
+                  : `RSVP for the ${label}`}
           </button>
           {error && (
             <p className="mt-2 text-center text-sm text-red-500">{error}</p>

@@ -27,28 +27,24 @@ export function Travel() {
           <div>
             <p className="text-foreground/80 leading-relaxed">
               Fly into{" "}
-              <strong>
-                <a
-                  href="https://airports.malaysiaairports.com.my/en/klia1"
-                  target="blank"
-                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
-                >
-                  Kuala Lumpur International Airport
-                </a>
-              </strong>{" "}
+              <a
+                href="https://airports.malaysiaairports.com.my/en/klia1"
+                target="blank"
+                className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
+              >
+                Kuala Lumpur International Airport
+              </a>{" "}
               (KUL), located in Sepang about 45 minutes from the city center.
             </p>
             <p className="mt-4 text-foreground/80 leading-relaxed">
               From the airport, we strongly recommend using the{" "}
-              <strong>
-                <a
-                  href="https://www.grab.com/my/download/"
-                  target="blank"
-                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
-                >
-                  Grab app
-                </a>
-              </strong>{" "}
+              <a
+                href="https://www.grab.com/my/download/"
+                target="blank"
+                className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
+              >
+                Grab app
+              </a>{" "}
               for convenient transportation, it's the Uber of South-east Asia,
               is affordable, easy to use and convenient. You can download the
               app and set up an account ahead of time - no need to stress when
@@ -62,15 +58,13 @@ export function Travel() {
             </h3>
             <p className="mt-4 text-foreground/80 leading-relaxed">
               For those traveling, you must complete a{" "}
-              <strong>
-                <a
-                  href="https://imigresen-online.imi.gov.my/mdac/main"
-                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
-                  target="blank"
-                >
-                  Malaysia Digital Arrival Card (MDAC)
-                </a>
-              </strong>{" "}
+              <a
+                href="https://imigresen-online.imi.gov.my/mdac/main"
+                className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
+                target="blank"
+              >
+                Malaysia Digital Arrival Card (MDAC)
+              </a>{" "}
               before you arrive. The MDAC must be submitted through the{" "}
               <a
                 href="https://imigresen-online.imi.gov.my/mdac/main"
@@ -103,15 +97,13 @@ export function Travel() {
               As with most international travel it's advisable to set up a
               travel card for ease of use while overseas. We personally
               recommend{" "}
-              <strong>
-                <a
-                  href="https://wise.com/"
-                  className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
-                  target="blank"
-                >
-                  Wise
-                </a>
-              </strong>{" "}
+              <a
+                href="https://wise.com/"
+                className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
+                target="blank"
+              >
+                Wise
+              </a>{" "}
               as it is low fees, works for ATM withdrawals, plus Grab and other
               international apps.
             </p>
