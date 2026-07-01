@@ -70,48 +70,12 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
                 "linear-gradient(175deg, #f2ebe0 0%, #ece3d4 30%, #e6dbca 60%, #e0d4c2 100%)",
             }}
           >
-            {/* Paper fiber texture */}
-            <div
-              className="absolute inset-0 opacity-[0.035]"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E")`,
-              }}
-            />
-            {/* Fine linen weave overlay */}
-            <div
-              className="absolute inset-0 opacity-[0.02]"
-              style={{
-                backgroundImage: `repeating-linear-gradient(
-                  0deg,
-                  transparent,
-                  transparent 2px,
-                  rgba(0,0,0,0.08) 2px,
-                  rgba(0,0,0,0.08) 3px
-                ),
-                repeating-linear-gradient(
-                  90deg,
-                  transparent,
-                  transparent 2px,
-                  rgba(0,0,0,0.06) 2px,
-                  rgba(0,0,0,0.06) 3px
-                )`,
-              }}
-            />
             {/* Subtle vignette */}
             <div
               className="absolute inset-0"
               style={{
                 background:
                   "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.06) 100%)",
-              }}
-            />
-
-            {/* Inner shadow at the top edge */}
-            <div
-              className="absolute top-0 left-0 right-0 h-24"
-              style={{
-                background:
-                  "linear-gradient(to bottom, rgba(0,0,0,0.08), transparent)",
               }}
             />
 
@@ -126,17 +90,13 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
                 points="1000,1000 500,400 1000,400"
                 fill="rgba(0,0,0,0.025)"
               />
-              <polygon
-                points="0,1000 500,650 1000,1000"
-                fill="rgba(255,255,255,0.05)"
-              />
             </svg>
           </div>
 
           {/* Page — the letter inside the envelope, matches hero bg */}
           <motion.div
             className="absolute inset-0"
-            style={{ zIndex: 6, backgroundColor: "var(--color-background)" }}
+            style={{ zIndex: 6, backgroundColor: "var(--color-background)", willChange: "clip-path" }}
             initial={{ clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" }}
             animate={
               phase === "opening"
@@ -152,7 +112,7 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
             initial={{ rotateX: 0 }}
             animate={phase === "opening" ? { rotateX: 180 } : { rotateX: 0 }}
             transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
-            style={{ perspective: 1200, zIndex: 10 }}
+            style={{ perspective: 1200, zIndex: 10, backfaceVisibility: "hidden", willChange: "transform" }}
           >
             <svg
               viewBox="0 0 1000 600"
@@ -185,7 +145,7 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
             className="absolute inset-0 flex items-start justify-center"
             style={{ zIndex: 7 }}
           >
-            <div className="mx-auto max-w-6xl px-6 pt-16 md:pt-24 w-full">
+            <div className="mx-auto max-w-6xl px-6 pt-12 md:pt-24 w-full">
               <HeroHeader
                 animate
                 animationState={phase === "opening" ? "visible" : "hidden"}
@@ -237,6 +197,7 @@ export function IntroOverlay({ onDismiss }: IntroOverlayProps) {
               zIndex: 20,
               width: 280,
               height: 280,
+              willChange: "transform",
             }}
             initial={false}
             animate={
