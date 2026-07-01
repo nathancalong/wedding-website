@@ -9,8 +9,17 @@ type ImageCarouselProps = {
   disabled?: boolean;
 };
 
-export function ImageCarousel({ images, opts, className, disabled }: ImageCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 50, ...opts });
+export function ImageCarousel({
+  images,
+  opts,
+  className,
+  disabled,
+}: ImageCarouselProps) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    duration: 50,
+    ...opts,
+  });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +69,7 @@ export function ImageCarousel({ images, opts, className, disabled }: ImageCarous
           clearAutoplay();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     emblaApi.on("pointerDown", onUserInteract);
@@ -99,6 +108,7 @@ export function ImageCarousel({ images, opts, className, disabled }: ImageCarous
                 <img
                   src={image.src}
                   alt={image.alt}
+                  decoding="async"
                   className="h-full w-full object-cover"
                 />
               </div>
