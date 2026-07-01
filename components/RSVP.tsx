@@ -83,6 +83,7 @@ function RsvpForm({ eventType }: RsvpFormProps) {
             const parsed = JSON.parse(data.rsvp.responses ?? "[]");
             if (Array.isArray(parsed) && parsed.length > 0) {
               setMembers(parsed);
+              return;
             }
           } catch {
             // ignore malformed responses
@@ -91,6 +92,8 @@ function RsvpForm({ eventType }: RsvpFormProps) {
       } catch {
         // silent
       }
+      const all = group.split(", ").filter(Boolean);
+      setMembers(all.map((name) => ({ name, attending: true })));
     },
     [eventType],
   );
@@ -98,12 +101,15 @@ function RsvpForm({ eventType }: RsvpFormProps) {
   const handleSelect = useCallback(
     (name: string) => {
       setNameInput(name);
-      resolveName(name);
       const group = nameToGroup[name.trim().toLowerCase()];
-      if (group) lookupRsvp(group);
+      if (group) {
+        setSelectedGroup(group);
+        setMembers([]);
+        lookupRsvp(group);
+      }
       setOpen(false);
     },
-    [resolveName, lookupRsvp],
+    [lookupRsvp],
   );
 
   useEffect(() => {
@@ -334,7 +340,7 @@ function RsvpForm({ eventType }: RsvpFormProps) {
 
           <button
             type="submit"
-            disabled={isSubmitting || submitted}
+            disabled={isSubmitting}
             className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-hibiscus px-8 py-3 text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
