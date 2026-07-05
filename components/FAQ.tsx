@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     q: "Is the ceremony indoors or outdoors?",
-    a: "The ceremony and reception will be held at Botanica + Co Bamboo Hills, which features both indoor and outdoor spaces. We'll be making the most of the outdoor setting for our ceremony, so do consider this for dress accordingly and preparing for some warm, humid weather until the celebrations move indoors.",
+    a: "The ceremony and reception will be held at Botanica + Co Bamboo Hills, which features both indoor and outdoor spaces. We'll be making the most of the outdoor setting for our ceremony, so please dress accordingly and prepare for some warm, humid weather until the celebrations move indoors.",
   },
   {
     q: "Is there parking at the venue?",

@@ -5,7 +5,6 @@ export const config = {
 };
 
 interface RSVPRow {
-  id?: number;
   eventType: string;
   groupKey: string;
   email: string;
@@ -84,11 +83,17 @@ export default async function handler(req: Request) {
       );
     }
 
-    if (row.id) {
+    const existing = await sql`
+      SELECT id FROM rsvps
+      WHERE group_key = ${row.groupKey} AND event_type = ${row.eventType}
+      LIMIT 1
+    `;
+
+    if (existing.length > 0) {
       await sql`
         UPDATE rsvps
         SET email = ${row.email}, message = ${row.message ?? ""}, responses = ${row.responses ?? "[]"}
-        WHERE id = ${row.id}
+        WHERE id = ${existing[0].id}
       `;
     } else {
       await sql`
