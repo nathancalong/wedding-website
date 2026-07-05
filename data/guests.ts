@@ -1,5 +1,17 @@
 export const guestGroups: string[] = [
+  "Nathan Long, Sasha Varman",
   // Nathan Family
+  "Kylie Long, Stuart Long, William Long, Christian Long",
+  "Christine Long, John Long",
+  "Elizabeth White, David White, Kathryn White, Daniel Lane, Sam White, Persephone McLennon, Matt White",
+  "Tracey Stevens, Tony Stevens",
+  "Brooke Stevens, Ryan Ford",
+  "Maddi Stevens, Jarad Nugent",
+  "Drew Stevens",
+  "Janine Brown, Rodney Brown",
+  "Matthew Brown, Charlotte Brown",
+  "Dylan Brown, Teagan Brown",
+  "Kim Newton, Phil Newton, Isabelle Newton, Kira Newton",
   // Friends
   "Ally Xu",
   "Srigarunya Baskaran, Janindu Kumara Devage",
@@ -20,5 +32,19 @@ export const guestGroups: string[] = [
   "Jonah Newman, Angelina Das",
   "Oliver Nicholls, Gabi Burge",
   // Sasha Family
-  "Suguna Veloo, Robert Maier"
+  "Trissha Varman, Danesha Varman, Pushpa Leela, Varman Ramachandran",
+  "Suguna Veloo, Robert Maier",
+  "Nantha Kumar",
+  "Ithayamalar Selvarajah, Leveneya Laxmi, Sanjay, Eagavalli",
+  "Vatsala Selvarajah, Kishore, Nirmall, Pavitra",
+  "Thanamala Selvarajah, Vishalini, Eswaran, Dhinesh, Agila",
+  "Jennifer Karen Pereira",
+  "J Santhakumari",
+  "Sheela Selvarajah, Mavind, Dashani, Aayden",
+  "Priya, Vijay, Aarya",
+  "Ivy, Ganesan",
+  "Kelvin, Xyndy, Liam",
+  "Manoj, Vino, Thein, Tavisa",
+  "Pheba, Adrian",
+  "Mala, Ramesh, Rumita",
 ];
