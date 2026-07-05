@@ -26,6 +26,10 @@ const faqs = [
     q: "Should I arrive early?",
     a: "We recommend arriving at least 20-30 minutes before the ceremony start time to settle in. Please allow for some travel time on the day as traffic can vary and add significant time to the journey, even from close by in the city.",
   },
+  {
+    q: "What options are available for dietary requirements?",
+    a: "The reception will feature a buffet style dinner with a variety of options that should cater to most dietary requirements. If you have specific concerns, please reach out to us directly.",
+  },
   // TODO: q: "Will there be transportation provided?",
   {
     q: "What's the weather like around the ceremony time of year?",
@@ -48,6 +52,30 @@ export function FAQ() {
           </h2>
           <div className="mx-auto mt-4 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
         </div>
+
+        <p className="mt-8 text-center text-foreground/80 leading-relaxed">
+          If you would like to ask us any questions, please feel free to reach
+          out to us on Messenger, Whatsapp, text, or simply give us a ring. We
+          would be happy to have a chat!
+        </p>
+        <p className="mt-4 text-center text-foreground/80 leading-relaxed">
+          <strong>Sasha:</strong>{" "}
+          <a
+            href="tel:+61418970885"
+            className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
+          >
+            0418 970 885
+          </a>
+        </p>
+        <p className="text-center text-foreground/80 leading-relaxed">
+          <strong>Nathan:</strong>{" "}
+          <a
+            href="tel:+61426541568"
+            className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
+          >
+            0426 541 568
+          </a>
+        </p>
 
         <Accordion type="single" collapsible className="mt-8 space-y-3">
           {faqs.map((f, i) => (

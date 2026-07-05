@@ -41,7 +41,7 @@ function RsvpForm({ eventType }: RsvpFormProps) {
   const [emailInput, setEmailInput] = useState("");
   const [existingId, setExistingId] = useState<number | null>(null);
   const [message, setMessage] = useState("");
-  const [dietaryRequirements, setDietaryRequirements] = useState("");
+  const [isLoadingLookup, setIsLoadingLookup] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const listRef = useRef<HTMLUListElement>(null);
@@ -64,11 +64,13 @@ function RsvpForm({ eventType }: RsvpFormProps) {
     } else {
       setSelectedGroup("");
       setMembers([]);
+      setIsLoadingLookup(false);
     }
   }, []);
 
   const lookupRsvp = useCallback(
     async (group: string) => {
+      setIsLoadingLookup(true);
       try {
         const res = await fetch(
           `/api/rsvp?groupKey=${encodeURIComponent(group)}&eventType=${eventType}`,
@@ -78,11 +80,11 @@ function RsvpForm({ eventType }: RsvpFormProps) {
           setExistingId(data.rsvp.id);
           setEmailInput(data.rsvp.email ?? "");
           setMessage(data.rsvp.message ?? "");
-          setDietaryRequirements(data.rsvp.dietary_requirements ?? "");
           try {
             const parsed = JSON.parse(data.rsvp.responses ?? "[]");
             if (Array.isArray(parsed) && parsed.length > 0) {
               setMembers(parsed);
+              setIsLoadingLookup(false);
               return;
             }
           } catch {
@@ -94,23 +96,26 @@ function RsvpForm({ eventType }: RsvpFormProps) {
       }
       const all = group.split(", ").filter(Boolean);
       setMembers(all.map((name) => ({ name, attending: true })));
+      setIsLoadingLookup(false);
     },
     [eventType],
   );
 
-  const handleSelect = useCallback(
-    (name: string) => {
-      setNameInput(name);
-      const group = nameToGroup[name.trim().toLowerCase()];
-      if (group) {
-        setSelectedGroup(group);
-        setMembers([]);
-        lookupRsvp(group);
-      }
-      setOpen(false);
-    },
-    [lookupRsvp],
-  );
+  const handleSelect = useCallback((name: string) => {
+    setNameInput(name);
+    const group = nameToGroup[name.trim().toLowerCase()];
+    if (group) {
+      setSelectedGroup(group);
+      setMembers([]);
+    }
+    setOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (selectedGroup) {
+      lookupRsvp(selectedGroup);
+    }
+  }, [selectedGroup, lookupRsvp]);
 
   useEffect(() => {
     setHighlightedIndex(-1);
@@ -165,7 +170,6 @@ function RsvpForm({ eventType }: RsvpFormProps) {
       groupKey: selectedGroup,
       email: emailInput,
       message,
-      dietaryRequirements,
       responses: JSON.stringify(members),
     };
 
@@ -281,78 +285,78 @@ function RsvpForm({ eventType }: RsvpFormProps) {
             </Popover>
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor={`email-${eventType}`}>Email</Label>
-            <Input
-              id={`email-${eventType}`}
-              name="email"
-              type="email"
-              required
-              placeholder="you@example.com"
-              value={emailInput}
-              onChange={(e) => setEmailInput(e.target.value)}
-            />
-          </div>
-
-          {selectedGroup && (
-            <div className="grid gap-3">
-              <Label>Who's attending the {label.toLowerCase()}?</Label>
-              <div className="grid gap-2">
-                {members.map((member) => (
-                  <Label
-                    key={member.name}
-                    className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus"
-                  >
-                    <Checkbox
-                      checked={member.attending}
-                      onCheckedChange={() => toggleAttending(member.name)}
-                    />
-                    {member.name}
-                  </Label>
-                ))}
-              </div>
+          {selectedGroup && isLoadingLookup && (
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-hibiscus" />
             </div>
           )}
 
-          <div className="grid gap-2">
-            <Label htmlFor={`dietary-${eventType}`}>
-              Dietary requirements (optional)
-            </Label>
-            <Input
-              id={`dietary-${eventType}`}
-              name="dietary"
-              value={dietaryRequirements}
-              onChange={(e) => setDietaryRequirements(e.target.value)}
-            />
-          </div>
+          {selectedGroup && !isLoadingLookup && (
+            <>
+              <div className="grid gap-2">
+                <Label htmlFor={`email-${eventType}`}>Email</Label>
+                <Input
+                  id={`email-${eventType}`}
+                  name="email"
+                  type="email"
+                  required
+                  placeholder="you@example.com"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                />
+              </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor={`message-${eventType}`}>
-              Message for the couple (optional)
-            </Label>
-            <Textarea
-              id={`message-${eventType}`}
-              name="message"
-              placeholder="A message, song request, or anything else..."
-              rows={4}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-          </div>
+              <div className="grid gap-3">
+                <Label>Who's attending the {label.toLowerCase()}?</Label>
+                <div className="grid gap-2">
+                  {members.map((member) => (
+                    <Label
+                      key={member.name}
+                      className="flex cursor-pointer items-center gap-3 rounded-lg border border-border bg-background p-4 transition hover:border-hibiscus has-[[data-state=checked]]:border-hibiscus"
+                    >
+                      <Checkbox
+                        checked={member.attending}
+                        onCheckedChange={() => toggleAttending(member.name)}
+                      />
+                      {member.name}
+                    </Label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor={`message-${eventType}`}>
+                  Message for the couple (optional)
+                </Label>
+                <Textarea
+                  id={`message-${eventType}`}
+                  name="message"
+                  placeholder="A message, song request, or anything else..."
+                  rows={4}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+              </div>
+            </>
+          )}
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoadingLookup}
             className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-hibiscus px-8 py-3 text-xs sm:text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+            {(isSubmitting || isLoadingLookup) && (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            )}
             {submitted
               ? "RSVP submitted!"
               : isSubmitting
                 ? "Sending..."
-                : error
-                  ? "Error submitting RSVP"
-                  : `RSVP for the ${label}`}
+                : isLoadingLookup
+                  ? "Loading..."
+                  : error
+                    ? "Error submitting RSVP"
+                    : `RSVP for the ${label}`}
           </button>
           {error && (
             <p className="mt-2 text-center text-sm text-red-500">{error}</p>
@@ -373,10 +377,11 @@ export function RSVP() {
           </p>
           <h2 className="mt-2 text-4xl md:text-6xl text-foreground">RSVP</h2>
           <div className="mx-auto mt-6 h-px w-24 bg-gradient-to-r from-transparent via-hibiscus to-transparent" />
-          <p className="mt-6 text-muted-foreground">
-            Kindly respond by <span className="font-bold">January, 2027</span>.
+          <p className="mt-6 text-xl text-muted-foreground">
+            Kindly RSVP by <span className="font-bold">1st December, 2026</span>
+            .
           </p>
-          <p className="text-muted-foreground">
+          <p className="mt-8 text-muted-foreground">
             We're so excited to celebrate with you.
           </p>
 

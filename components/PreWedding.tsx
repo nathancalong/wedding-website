@@ -27,7 +27,7 @@ export function PreWedding() {
                 rel="noopener noreferrer"
                 className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
               >
-                Nalangu
+                Nalangu (Haldi)
               </a>{" "}
               and{" "}
               <a
