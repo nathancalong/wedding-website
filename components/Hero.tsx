@@ -3,7 +3,6 @@ import img1 from "@/assets/image1.jpeg";
 import img2 from "@/assets/image2.jpg";
 import img3 from "@/assets/image3.jpeg";
 import img4 from "@/assets/image4.jpg";
-import img5 from "@/assets/image5.jpeg";
 import { HeroHeader } from "@/components/HeroHeader";
 import { ImageCarousel } from "@/components/ImageCarousel";
 
@@ -12,7 +11,6 @@ const images = [
   { src: img2, alt: "Sasha and Nathan 2" },
   { src: img3, alt: "Sasha and Nathan 3" },
   { src: img4, alt: "Sasha and Nathan 4" },
-  { src: img5, alt: "Sasha and Nathan 5" },
 ];
 
 const weddingDate = new Date("2027-03-26T16:00:00");

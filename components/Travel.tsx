@@ -16,7 +16,9 @@ export function Travel() {
     <section id="travel" className="py-12 md:py-16">
       <div className="mx-auto max-w-3xl px-6">
         <div className="text-center">
-          <p className="font-script text-3xl text-hibiscus">Come fly with me</p>
+          <p className="font-script text-3xl text-hibiscus">
+            Visa & Travel information
+          </p>
           <h2 className="mt-2 text-4xl md:text-6xl text-foreground">
             Getting to Malaysia
           </h2>
