@@ -10,7 +10,6 @@ interface RSVPRow {
   groupKey: string;
   email: string;
   message: string;
-  dietaryRequirements?: string;
   responses: string;
 }
 
@@ -39,7 +38,7 @@ export default async function handler(req: Request) {
       }
 
       const result = await sql`
-        SELECT id, event_type, group_key, email, message, dietary_requirements, responses
+        SELECT id, event_type, group_key, email, message, responses
         FROM rsvps
         WHERE group_key = ${groupKey} AND event_type = ${eventType}
         ORDER BY created_at DESC
@@ -88,13 +87,13 @@ export default async function handler(req: Request) {
     if (row.id) {
       await sql`
         UPDATE rsvps
-        SET email = ${row.email}, message = ${row.message ?? ""}, dietary_requirements = ${row.dietaryRequirements ?? ""}, responses = ${row.responses ?? "[]"}
+        SET email = ${row.email}, message = ${row.message ?? ""}, responses = ${row.responses ?? "[]"}
         WHERE id = ${row.id}
       `;
     } else {
       await sql`
-        INSERT INTO rsvps (event_type, group_key, email, message, dietary_requirements, responses)
-        VALUES (${row.eventType}, ${row.groupKey}, ${row.email}, ${row.message ?? ""}, ${row.dietaryRequirements ?? ""}, ${row.responses ?? "[]"})
+        INSERT INTO rsvps (event_type, group_key, email, message, responses)
+        VALUES (${row.eventType}, ${row.groupKey}, ${row.email}, ${row.message ?? ""}, ${row.responses ?? "[]"})
       `;
     }
 
