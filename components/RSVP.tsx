@@ -1,20 +1,10 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from "react";
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import { useState, useCallback, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import { guestGroups } from "@/data/guests";
-
-const allNames = guestGroups.flatMap((group) =>
-  group.split(", ").filter(Boolean),
-);
 
 const nameToGroup = Object.fromEntries(
   guestGroups.flatMap((group) =>
@@ -35,8 +25,6 @@ function RsvpForm({ eventType }: RsvpFormProps) {
   const [nameInput, setNameInput] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [members, setMembers] = useState<Member[]>([]);
-  const [open, setOpen] = useState(false);
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [existingId, setExistingId] = useState<number | null>(null);
@@ -44,18 +32,11 @@ function RsvpForm({ eventType }: RsvpFormProps) {
   const [isLoadingLookup, setIsLoadingLookup] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
-  const listRef = useRef<HTMLUListElement>(null);
 
   const label = eventType === "wedding" ? "Wedding" : "Pre-wedding";
   const title = eventType === "wedding" ? "Wedding RSVP" : "Pre-wedding RSVP";
 
-  const matches = useMemo(() => {
-    if (!nameInput.trim()) return allNames;
-    const lower = nameInput.trim().toLowerCase();
-    return allNames.filter((name) => name.toLowerCase().includes(lower));
-  }, [nameInput]);
-
-  const resolveName = useCallback((value: string) => {
+  function resolveName(value: string) {
     const match = nameToGroup[value.trim().toLowerCase()];
     if (match) {
       setSelectedGroup(match);
@@ -66,7 +47,7 @@ function RsvpForm({ eventType }: RsvpFormProps) {
       setMembers([]);
       setIsLoadingLookup(false);
     }
-  }, []);
+  }
 
   const lookupRsvp = useCallback(
     async (group: string) => {
@@ -101,55 +82,11 @@ function RsvpForm({ eventType }: RsvpFormProps) {
     [eventType],
   );
 
-  const handleSelect = useCallback((name: string) => {
-    setNameInput(name);
-    const group = nameToGroup[name.trim().toLowerCase()];
-    if (group) {
-      setSelectedGroup(group);
-      setMembers([]);
-    }
-    setOpen(false);
-  }, []);
-
   useEffect(() => {
     if (selectedGroup) {
       lookupRsvp(selectedGroup);
     }
   }, [selectedGroup, lookupRsvp]);
-
-  useEffect(() => {
-    setHighlightedIndex(-1);
-  }, [matches]);
-
-  useEffect(() => {
-    const el = listRef.current?.children[highlightedIndex] as
-      | HTMLElement
-      | undefined;
-    el?.scrollIntoView({ block: "nearest" });
-  }, [highlightedIndex]);
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (!open || matches.length === 0) return;
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev < matches.length - 1 ? prev + 1 : 0,
-        );
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev > 0 ? prev - 1 : matches.length - 1,
-        );
-      } else if (e.key === "Enter" && highlightedIndex >= 0) {
-        e.preventDefault();
-        handleSelect(matches[highlightedIndex]);
-      } else if (e.key === "Escape") {
-        setOpen(false);
-      }
-    },
-    [open, matches, highlightedIndex, handleSelect],
-  );
 
   function toggleAttending(name: string) {
     setMembers((prev) =>
@@ -214,75 +151,21 @@ function RsvpForm({ eventType }: RsvpFormProps) {
         <div className="grid gap-5">
           <div className="grid gap-2">
             <Label htmlFor={`name-${eventType}`}>Full Name</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <div className="relative">
-                  <Input
-                    id={`name-${eventType}`}
-                    name="name"
-                    required
-                    placeholder="Your name"
-                    value={nameInput}
-                    autoComplete="new-password"
-                    data-1p-ignore
-                    data-lpignore="true"
-                    data-form-type="other"
-                    onChange={(e) => {
-                      setNameInput(e.target.value);
-                      resolveName(e.target.value);
-                    }}
-                    onFocus={() => {
-                      if (nameInput.trim()) setOpen(true);
-                    }}
-                    onKeyDown={handleKeyDown}
-                    className="pr-10"
-                  />
-                  <ChevronsUpDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                </div>
-              </PopoverTrigger>
-              <PopoverContent
-                className="p-0"
-                align="start"
-                sideOffset={4}
-                style={{ width: "var(--radix-popover-trigger-width)" }}
-                onOpenAutoFocus={(e) => e.preventDefault()}
-              >
-                <ul ref={listRef} className="max-h-48 overflow-y-auto p-1">
-                  {matches.length === 0 ? (
-                    <li className="py-6 text-center text-sm text-muted-foreground">
-                      No matching names
-                    </li>
-                  ) : (
-                    matches.map((name, i) => (
-                      <li
-                        key={name}
-                        role="option"
-                        aria-selected={highlightedIndex === i}
-                        data-index={i}
-                        onClick={() => handleSelect(name)}
-                        onMouseEnter={() => setHighlightedIndex(i)}
-                        className={cn(
-                          "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition",
-                          highlightedIndex === i
-                            ? "bg-accent text-accent-foreground"
-                            : "hover:bg-accent hover:text-accent-foreground",
-                        )}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            nameInput.toLowerCase() === name.toLowerCase()
-                              ? "opacity-100"
-                              : "opacity-0",
-                          )}
-                        />
-                        {name}
-                      </li>
-                    ))
-                  )}
-                </ul>
-              </PopoverContent>
-            </Popover>
+            <Input
+              id={`name-${eventType}`}
+              name="name"
+              required
+              placeholder="Your name"
+              value={nameInput}
+              autoComplete="new-password"
+              data-1p-ignore
+              data-lpignore="true"
+              data-form-type="other"
+              onChange={(e) => {
+                setNameInput(e.target.value);
+                resolveName(e.target.value);
+              }}
+            />
           </div>
 
           {selectedGroup && isLoadingLookup && (
