@@ -64,7 +64,7 @@ export function FAQ() {
             href="tel:+61418970885"
             className="underline decoration-hibiscus decoration-2 underline-offset-2 transition hover:text-hibiscus"
           >
-            0418 970 885
+            0416 970 885
           </a>
         </p>
         <p className="text-center text-foreground/80 leading-relaxed">
