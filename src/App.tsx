@@ -82,7 +82,7 @@ function App() {
   );
 
   return (
-    <main className="min-h-screen bg-background overflow-x-hidden touch-pan-y">
+    <main className="min-h-screen bg-background touch-pan-y">
       <AnimatePresence>
         {showOverlay && (
           <IntroOverlay
