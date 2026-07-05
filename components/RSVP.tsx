@@ -228,9 +228,7 @@ function RsvpForm({ eventType }: RsvpFormProps) {
             disabled={isSubmitting || isLoadingLookup || !selectedGroup}
             className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-hibiscus px-8 py-3 text-xs sm:text-sm font-medium uppercase tracking-[0.2em] text-white transition hover:bg-hibiscus/80 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting && (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            )}
+            {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
             {submitted
               ? "RSVP submitted!"
               : isSubmitting
