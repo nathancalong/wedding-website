@@ -1,3 +1,4 @@
 export const guestGroups: string[] = [
-  "Ally Xu"
+  "Ally Xu",
+  "Oliver Locke"
 ];
