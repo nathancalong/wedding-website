@@ -8,7 +8,7 @@ export const guestGroups: string[] = [
   "Tracey Stevens, Tony Stevens",
   "Brooke Stevens, Ryan Ford",
   "Maddi Stevens, Jarad Nugent",
-  "Drew Stevens",
+  "Drue Stevens",
   "Janine Brown, Rodney Brown",
   "Matthew Brown, Charlotte Brown",
   "Dylan Brown, Teagan Brown",
